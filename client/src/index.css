@@ -1,0 +1,27 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html, body, #root {
+  height: 100%;
+  background: #f6f7fa;
+}
+
+body {
+  font-family: 'Inter', system-ui, sans-serif;
+  color: #0f172a;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Use Devanagari font automatically for nepali text */
+.np {
+  font-family: 'Noto Sans Devanagari', 'Inter', system-ui, sans-serif;
+  letter-spacing: 0;
+}
+
+/* Hide scrollbars on horizontal pill rows */
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { scrollbar-width: none; }
+
+/* Smooth taps on mobile */
+button, a { -webkit-tap-highlight-color: transparent; }
