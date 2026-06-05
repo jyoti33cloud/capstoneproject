@@ -5,19 +5,53 @@ const path = require('path');
 
 const app = express();
 
-// Enhanced CORS configuration
+// Enhanced CORS configuration - Production Ready
+const getAllowedOrigins = () => {
+  const clientOrigin = process.env.CLIENT_ORIGIN;
+
+  const allowed = [
+    'http://localhost:5173',
+    'http://localhost:3000',
+    'http://127.0.0.1:5173',
+    'http://127.0.0.1:3000'
+  ];
+
+  // Add production URLs
+  if (clientOrigin) {
+    allowed.push(clientOrigin);
+  }
+
+  // Add render production URLs (wildcard support)
+  if (process.env.NODE_ENV === 'production') {
+    // Allow any onrender.com domain for now (can be restricted later)
+    allowed.push(/\.onrender\.com$/);
+  }
+
+  console.log('✔ CORS allowed origins:', allowed);
+  return allowed;
+};
+
 app.use(cors({
   origin: function (origin, callback) {
-    const allowed = [
-      'http://localhost:5173',
-      'http://localhost:3000',
-      'http://127.0.0.1:5173',
-      'http://127.0.0.1:3000',
-      process.env.CLIENT_ORIGIN
-    ].filter(Boolean);
+    const allowed = getAllowedOrigins();
 
     // Allow requests with no origin (mobile apps, curl requests)
-    if (!origin || allowed.includes(origin)) {
+    if (!origin) {
+      callback(null, true);
+      return;
+    }
+
+    // Check if origin is in allowed list
+    const isAllowed = allowed.some(allowedOrigin => {
+      if (typeof allowedOrigin === 'string') {
+        return origin === allowedOrigin;
+      } else if (allowedOrigin instanceof RegExp) {
+        return allowedOrigin.test(origin);
+      }
+      return false;
+    });
+
+    if (isAllowed) {
       callback(null, true);
     } else {
       console.warn(`CORS blocked: ${origin}`);
@@ -25,8 +59,9 @@ app.use(cors({
     }
   },
   credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'HEAD'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  optionsSuccessStatus: 200
 }));
 
 // Security headers for Google OAuth
@@ -77,7 +112,8 @@ app.use((err, _req, res, _next) => {
 
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
-  console.log(`✔ Asha API running on http://localhost:${PORT}`);
-  console.log(`✔ CORS enabled for: ${process.env.CLIENT_ORIGIN || 'http://localhost:5173'}`);
+  console.log(`✔ Asha API running on port ${PORT}`);
   console.log(`✔ Environment: ${process.env.NODE_ENV || 'development'}`);
+  console.log(`✔ CLIENT_ORIGIN: ${process.env.CLIENT_ORIGIN || 'not set (using default localhost)'}`);
+  console.log(`✔ Database: ${process.env.DATABASE_URL ? 'configured' : 'not configured'}`);
 });
