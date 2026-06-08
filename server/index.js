@@ -95,6 +95,9 @@ app.use('/api/disability-checklist', require('./routes/disability-checklist'));
 // Admin Routes (NEW)
 app.use('/api/admin', require('./routes/admin'));
 
+// Organizations Routes
+app.use('/api/organizations', require('./routes/organizations'));
+
 // 404
 app.use((req, res) => {
   console.warn(`404: ${req.method} ${req.path}`);

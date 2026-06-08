@@ -9,6 +9,7 @@ export function AuthProvider({ children }) {
     catch { return null; }
   });
   const [loading, setLoading] = useState(false);
+  const [needsRoleSelection, setNeedsRoleSelection] = useState(false);
 
   useEffect(() => {
     const token = localStorage.getItem('asha_token');
@@ -68,6 +69,13 @@ export function AuthProvider({ children }) {
       localStorage.setItem('asha_token', data.token);
       localStorage.setItem('asha_user', JSON.stringify(data.user));
       setUser(data.user);
+
+      // Check if role selection is needed (for new Google logins)
+      if (data.needsRoleSelection) {
+        setNeedsRoleSelection(true);
+        return { ok: true, needsRoleSelection: true };
+      }
+
       return { ok: true };
     } catch (e) {
       const errorMsg = e.response?.data?.error || e.message || 'Google login failed';
@@ -95,14 +103,60 @@ export function AuthProvider({ children }) {
     }
   }
 
+  async function selectRole(role, orgData = {}) {
+    setLoading(true);
+    try {
+      let payload = { role };
+
+      // If creating organization, create it first
+      if (role === 'organization_admin' && orgData.orgName) {
+        const { data: orgRes } = await api.post('/organizations/create', {
+          name: orgData.orgName,
+          type: orgData.orgType,
+          location: orgData.orgLocation,
+          email: orgData.orgEmail
+        });
+        payload.organizationId = orgRes.organization.id;
+      }
+
+      const { data } = await api.post('/auth/select-role', payload);
+
+      localStorage.setItem('asha_token', data.token);
+      localStorage.setItem('asha_user', JSON.stringify(data.user));
+      setUser(data.user);
+      setNeedsRoleSelection(false);
+
+      return { ok: true };
+    } catch (e) {
+      const errorMsg = e.response?.data?.error || e.message || 'Failed to select role';
+      console.error('Role selection error:', errorMsg);
+      return { ok: false, error: errorMsg };
+    } finally {
+      setLoading(false);
+    }
+  }
+
   function logout() {
     localStorage.removeItem('asha_token');
     localStorage.removeItem('asha_user');
     setUser(null);
+    setNeedsRoleSelection(false);
   }
 
   return (
-    <AuthContext.Provider value={{ user, login, loginWithGoogle, register, logout, loading }}>
+    <AuthContext.Provider
+      value={{
+        user,
+        login,
+        loginWithGoogle,
+        register,
+        logout,
+        selectRole,
+        loading,
+        needsRoleSelection,
+        setNeedsRoleSelection
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );

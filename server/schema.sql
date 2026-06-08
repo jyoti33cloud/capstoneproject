@@ -10,6 +10,19 @@ DROP TABLE IF EXISTS routine_logs CASCADE;
 DROP TABLE IF EXISTS specialists CASCADE;
 DROP TABLE IF EXISTS users CASCADE;
 
+-- Organizations (Therapy Centers, Child Development Centers, etc.)
+CREATE TABLE organizations (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR(150) NOT NULL,
+  type VARCHAR(50) NOT NULL,  -- 'therapy_center' | 'child_dev_center' | 'special_ed_center' | 'rehab_center'
+  location VARCHAR(150),
+  phone VARCHAR(20),
+  email VARCHAR(160),
+  description TEXT,
+  avatar_url TEXT,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
 -- Users
 CREATE TABLE users (
   id SERIAL PRIMARY KEY,
@@ -17,12 +30,24 @@ CREATE TABLE users (
   email VARCHAR(160) UNIQUE NOT NULL,
   password_hash VARCHAR(255),
   google_id VARCHAR(255) UNIQUE,
+  role VARCHAR(30) DEFAULT 'parent',  -- 'parent' | 'therapist' | 'admin' | 'organization_admin'
+  organization_id INTEGER REFERENCES organizations(id) ON DELETE SET NULL,
   city VARCHAR(80),
   avatar_url TEXT,
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- Specialists / Therapy Centers
+-- Organization Members (therapists/specialists linked to organizations)
+CREATE TABLE organization_members (
+  id SERIAL PRIMARY KEY,
+  organization_id INTEGER NOT NULL REFERENCES organizations(id) ON DELETE CASCADE,
+  user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  position VARCHAR(100),  -- e.g., 'Speech Therapist', 'Occupational Therapist'
+  joined_at TIMESTAMPTZ DEFAULT NOW(),
+  UNIQUE(organization_id, user_id)
+);
+
+-- Specialists / Therapy Centers (legacy - can be deprecated or used for listing)
 CREATE TABLE specialists (
   id SERIAL PRIMARY KEY,
   name VARCHAR(150) NOT NULL,
@@ -95,6 +120,10 @@ CREATE TABLE disability_checklist (
 );
 
 -- Indexes
+CREATE INDEX idx_users_role ON users(role);
+CREATE INDEX idx_users_organization ON users(organization_id);
+CREATE INDEX idx_org_members_organization ON organization_members(organization_id);
+CREATE INDEX idx_org_members_user ON organization_members(user_id);
 CREATE INDEX idx_posts_category ON posts(category);
 CREATE INDEX idx_posts_created ON posts(created_at DESC);
 CREATE INDEX idx_appointments_user ON appointments(user_id);

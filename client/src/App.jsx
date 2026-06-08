@@ -2,7 +2,8 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import ProtectedRoute from './components/ProtectedRoute';
 import Login from './pages/Login';
 import Register from './pages/Register';
-import Home from './pages/Home';
+import SelectRole from './pages/SelectRole';
+import DashboardRouter from './pages/DashboardRouter';
 import Learn from './pages/Learn';
 import Community from './pages/Community';
 import FindHelp from './pages/FindHelp';
@@ -18,7 +19,8 @@ export default function App() {
       <Route path="/" element={<Navigate to="/home" replace />} />
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
-      <Route path="/home" element={<ProtectedRoute><Home /></ProtectedRoute>} />
+      <Route path="/select-role" element={<SelectRole />} />
+      <Route path="/home" element={<ProtectedRoute><DashboardRouter /></ProtectedRoute>} />
       <Route path="/learn" element={<ProtectedRoute><Learn /></ProtectedRoute>} />
       <Route path="/disability-checklist" element={<ProtectedRoute><DisabilityChecklist /></ProtectedRoute>} />
       <Route path="/community" element={<ProtectedRoute><Community /></ProtectedRoute>} />

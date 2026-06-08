@@ -5,7 +5,7 @@ import { useAuth } from '../context/AuthContext';
 import { useLang } from '../context/LangContext';
 
 export default function Login() {
-  const { login, loginWithGoogle, loading } = useAuth();
+  const { login, loginWithGoogle, loading, needsRoleSelection } = useAuth();
   const { t, lang, toggle } = useLang();
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
@@ -23,8 +23,15 @@ export default function Login() {
   async function handleGoogleSuccess(credentialResponse) {
     setErr('');
     const r = await loginWithGoogle(credentialResponse);
-    if (r.ok) navigate('/home');
-    else setErr(r.error);
+    if (r.ok) {
+      if (r.needsRoleSelection) {
+        navigate('/select-role');
+      } else {
+        navigate('/home');
+      }
+    } else {
+      setErr(r.error);
+    }
   }
 
   return (
