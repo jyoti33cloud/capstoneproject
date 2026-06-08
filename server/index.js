@@ -92,11 +92,18 @@ app.use('/api/community', require('./routes/community'));
 app.use('/api/routine', require('./routes/routine'));
 app.use('/api/disability-checklist', require('./routes/disability-checklist'));
 
-// Admin Routes (NEW)
+// Admin Routes
 app.use('/api/admin', require('./routes/admin'));
+app.use('/api/admin', require('./routes/admin_advanced'));
 
 // Organizations Routes
 app.use('/api/organizations', require('./routes/organizations'));
+
+// Therapist Routes
+app.use('/api/therapists', require('./routes/therapists'));
+
+// Advanced Appointments Routes
+app.use('/api/appointments', require('./routes/appointments_advanced'));
 
 // 404
 app.use((req, res) => {

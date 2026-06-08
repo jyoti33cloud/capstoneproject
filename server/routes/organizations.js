@@ -172,4 +172,140 @@ router.put('/:id', authRequired, async (req, res) => {
   }
 });
 
+// POST /api/organizations/:id/services
+router.post('/:id/services', authRequired, async (req, res) => {
+  const { service_name, description, price_range } = req.body;
+
+  if (!service_name) {
+    return res.status(400).json({ error: 'Service name is required' });
+  }
+
+  try {
+    // Verify org admin
+    const admin = await pool.query(
+      'SELECT id FROM users WHERE id = $1 AND role = $2 AND organization_id = $3',
+      [req.user.id, 'organization_admin', req.params.id]
+    );
+
+    if (!admin.rowCount) {
+      return res.status(403).json({ error: 'Only organization admins can add services' });
+    }
+
+    const { rows } = await pool.query(
+      `INSERT INTO organization_services (organization_id, service_name, description, price_range)
+       VALUES ($1, $2, $3, $4)
+       RETURNING *`,
+      [req.params.id, service_name, description, price_range]
+    );
+
+    res.status(201).json({ service: rows[0] });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to add service' });
+  }
+});
+
+// GET /api/organizations/:id/services
+router.get('/:id/services', async (req, res) => {
+  try {
+    const { rows } = await pool.query(
+      'SELECT * FROM organization_services WHERE organization_id = $1 AND is_active = true',
+      [req.params.id]
+    );
+    res.json({ services: rows });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to fetch services' });
+  }
+});
+
+// POST /api/organizations/:id/details
+router.post('/:id/details', authRequired, async (req, res) => {
+  const { address_line_1, city, state, postal_code, phone_1, phone_2, registration_number, about_us } = req.body;
+
+  try {
+    const { rows } = await pool.query(
+      `INSERT INTO organization_details (organization_id, address_line_1, city, state, postal_code, phone_1, phone_2, registration_number, about_us)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+       ON CONFLICT (organization_id) DO UPDATE SET
+       address_line_1 = EXCLUDED.address_line_1, city = EXCLUDED.city, state = EXCLUDED.state,
+       postal_code = EXCLUDED.postal_code, phone_1 = EXCLUDED.phone_1, phone_2 = EXCLUDED.phone_2,
+       registration_number = EXCLUDED.registration_number, about_us = EXCLUDED.about_us, updated_at = NOW()
+       RETURNING *`,
+      [req.params.id, address_line_1, city, state, postal_code, phone_1, phone_2, registration_number, about_us]
+    );
+
+    res.json({ details: rows[0] });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to save organization details' });
+  }
+});
+
+// GET /api/organizations/:id/details
+router.get('/:id/details', async (req, res) => {
+  try {
+    const { rows } = await pool.query(
+      'SELECT * FROM organization_details WHERE organization_id = $1',
+      [req.params.id]
+    );
+    res.json({ details: rows[0] || {} });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to fetch details' });
+  }
+});
+
+// GET /api/organizations/:id/appointments - View all appointments in organization
+router.get('/:id/appointments', authRequired, async (req, res) => {
+  try {
+    const { rows } = await pool.query(
+      `SELECT aps.*, u_therapist.name as therapist_name, u_parent.name as parent_name
+       FROM appointment_slots aps
+       JOIN users u_therapist ON aps.therapist_id = u_therapist.id
+       JOIN users u_parent ON aps.parent_id = u_parent.id
+       WHERE u_therapist.organization_id = $1
+       ORDER BY aps.appointment_date DESC`,
+      [req.params.id]
+    );
+    res.json({ appointments: rows });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to fetch appointments' });
+  }
+});
+
+// POST /api/organizations/:id/events
+router.post('/:id/events', authRequired, async (req, res) => {
+  const { title, description, event_date, start_time, end_time, location, event_type, capacity } = req.body;
+
+  try {
+    const { rows } = await pool.query(
+      `INSERT INTO events (organization_id, title, description, event_date, start_time, end_time, location, event_type, capacity)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+       RETURNING *`,
+      [req.params.id, title, description, event_date, start_time, end_time, location, event_type, capacity]
+    );
+
+    res.status(201).json({ event: rows[0] });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to create event' });
+  }
+});
+
+// GET /api/organizations/:id/events
+router.get('/:id/events', async (req, res) => {
+  try {
+    const { rows } = await pool.query(
+      'SELECT * FROM events WHERE organization_id = $1 AND is_published = true ORDER BY event_date DESC',
+      [req.params.id]
+    );
+    res.json({ events: rows });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to fetch events' });
+  }
+});
+
 module.exports = router;
