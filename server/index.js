@@ -102,6 +102,12 @@ app.use('/api/organizations', require('./routes/organizations'));
 // Therapist Routes
 app.use('/api/therapists', require('./routes/therapists'));
 
+// Verification Routes
+app.use('/api/verification', require('./routes/verification'));
+
+// Messaging Routes
+app.use('/api/messages', require('./routes/messaging'));
+
 // Advanced Appointments Routes
 app.use('/api/appointments', require('./routes/appointments_advanced'));
 

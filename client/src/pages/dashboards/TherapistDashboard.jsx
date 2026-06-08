@@ -29,7 +29,9 @@ export default function TherapistDashboard() {
     { id: 'profile', label: 'My Profile', icon: '👤' },
     { id: 'qualifications', label: 'Qualifications', icon: '🎓' },
     { id: 'availability', label: 'Availability', icon: '⏰' },
-    { id: 'progress', label: 'Progress Notes', icon: '📝' }
+    { id: 'progress', label: 'Progress Notes', icon: '📝' },
+    { id: 'verification', label: 'Verification', icon: '✅' },
+    { id: 'messaging', label: 'Messages', icon: '💬' }
   ];
 
   return (
@@ -94,6 +96,8 @@ export default function TherapistDashboard() {
         {activeTab === 'qualifications' && <QualificationsTab />}
         {activeTab === 'availability' && <AvailabilityTab />}
         {activeTab === 'progress' && <ProgressNotesTab />}
+        {activeTab === 'verification' && <VerificationTab />}
+        {activeTab === 'messaging' && <MessagingTab />}
       </main>
     </div>
   );
@@ -729,6 +733,327 @@ function SelectField({ label, value, onChange, options }) {
           <option key={opt.value} value={opt.value}>{opt.label}</option>
         ))}
       </select>
+    </div>
+  );
+}
+
+// NEW TABS BELOW - Add these to the existing file
+
+// Verification Tab Component
+export function VerificationTab() {
+  const [documents, setDocuments] = useState([]);
+  const [status, setStatus] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [newDoc, setNewDoc] = useState({
+    document_type: 'license',
+    document_url: ''
+  });
+
+  useEffect(() => {
+    fetchVerificationData();
+  }, []);
+
+  async function fetchVerificationData() {
+    try {
+      const [docRes, statusRes] = await Promise.all([
+        api.get('/verification/my-documents'),
+        api.get('/verification/status')
+      ]);
+      setDocuments(docRes.data.documents || []);
+      setStatus(statusRes.data || {});
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function uploadDocument() {
+    if (!newDoc.document_url) {
+      alert('Please enter document URL');
+      return;
+    }
+    try {
+      await api.post('/verification/upload', newDoc);
+      setNewDoc({ document_type: 'license', document_url: '' });
+      fetchVerificationData();
+      alert('Document uploaded! Pending admin review.');
+    } catch (err) {
+      alert('Failed to upload document');
+    }
+  }
+
+  async function deleteDocument(id) {
+    if (confirm('Delete this document?')) {
+      try {
+        await api.delete(`/verification/document/${id}`);
+        fetchVerificationData();
+      } catch (err) {
+        alert('Failed to delete');
+      }
+    }
+  }
+
+  if (loading) return <p className="text-slate-600">Loading...</p>;
+
+  return (
+    <div>
+      <h2 className="text-xl font-bold text-slate-900 mb-6">Verification & Credentials</h2>
+
+      {/* Status Card */}
+      <div className={`rounded-2xl p-6 shadow-sm border-2 mb-8 ${
+        status.profile_status?.is_verified
+          ? 'bg-green-50 border-green-300'
+          : status.documents_summary?.verified > 0
+          ? 'bg-yellow-50 border-yellow-300'
+          : 'bg-orange-50 border-orange-300'
+      }`}>
+        <h3 className="font-bold text-lg mb-3">
+          {status.profile_status?.is_verified ? '✅ Verified' : '⏳ Verification Pending'}
+        </h3>
+        <div className="grid grid-cols-3 gap-4 text-sm">
+          <div>
+            <p className="text-slate-600">Total Submitted</p>
+            <p className="text-2xl font-bold">{status.documents_summary?.total || 0}</p>
+          </div>
+          <div>
+            <p className="text-slate-600">Approved</p>
+            <p className="text-2xl font-bold text-green-600">{status.documents_summary?.verified || 0}</p>
+          </div>
+          <div>
+            <p className="text-slate-600">Pending</p>
+            <p className="text-2xl font-bold text-orange-600">{status.documents_summary?.pending || 0}</p>
+          </div>
+        </div>
+      </div>
+
+      {/* Upload Form */}
+      <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 mb-8 max-w-2xl">
+        <h3 className="font-bold text-slate-900 mb-4">Upload New Document</h3>
+        <div className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-slate-700 mb-2">Document Type</label>
+            <select
+              value={newDoc.document_type}
+              onChange={(e) => setNewDoc({ ...newDoc, document_type: e.target.value })}
+              className="w-full rounded-lg border border-slate-200 px-4 py-3 focus:ring-2 focus:ring-blue-500 outline-none"
+            >
+              <option value="license">License</option>
+              <option value="certificate">Certificate</option>
+              <option value="degree">Degree</option>
+              <option value="registration">Registration</option>
+            </select>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-slate-700 mb-2">Document URL</label>
+            <input
+              type="text"
+              value={newDoc.document_url}
+              onChange={(e) => setNewDoc({ ...newDoc, document_url: e.target.value })}
+              placeholder="https://example.com/document.pdf"
+              className="w-full rounded-lg border border-slate-200 px-4 py-3 focus:ring-2 focus:ring-blue-500 outline-none"
+            />
+          </div>
+
+          <button
+            onClick={uploadDocument}
+            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-lg transition"
+          >
+            Upload Document
+          </button>
+        </div>
+      </div>
+
+      {/* Documents List */}
+      <h3 className="font-bold text-slate-900 mb-4">Submitted Documents</h3>
+      {documents.length === 0 ? (
+        <div className="bg-white rounded-2xl p-8 text-center border border-slate-200">
+          <p className="text-slate-600">No documents submitted yet</p>
+        </div>
+      ) : (
+        <div className="space-y-4">
+          {documents.map((doc) => (
+            <div key={doc.id} className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
+              <div className="flex justify-between items-start">
+                <div>
+                  <h4 className="font-bold text-slate-900 capitalize">{doc.document_type}</h4>
+                  <p className="text-sm text-slate-600 mt-2">
+                    Status: <span className={`font-semibold ${
+                      doc.status === 'verified' ? 'text-green-600' :
+                      doc.status === 'rejected' ? 'text-red-600' : 'text-orange-600'
+                    }`}>{doc.status}</span>
+                  </p>
+                  <p className="text-sm text-slate-600 mt-1">
+                    Submitted: {new Date(doc.created_at).toLocaleDateString()}
+                  </p>
+                  {doc.admin_notes && (
+                    <p className="text-sm text-slate-600 mt-2 bg-slate-50 p-2 rounded">
+                      Admin Notes: {doc.admin_notes}
+                    </p>
+                  )}
+                </div>
+                {doc.status === 'pending' && (
+                  <button
+                    onClick={() => deleteDocument(doc.id)}
+                    className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition text-sm"
+                  >
+                    Delete
+                  </button>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+// Messaging Tab Component
+export function MessagingTab() {
+  const [conversations, setConversations] = useState([]);
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [messages, setMessages] = useState([]);
+  const [newMessage, setNewMessage] = useState('');
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchInbox();
+  }, []);
+
+  async function fetchInbox() {
+    try {
+      const { data } = await api.get('/messages/inbox');
+      // Get unique senders
+      const uniqueSenders = {};
+      data.messages?.forEach(msg => {
+        if (!uniqueSenders[msg.sender_id]) {
+          uniqueSenders[msg.sender_id] = {
+            user_id: msg.sender_id,
+            name: msg.sender_name,
+            avatar: msg.avatar_url
+          };
+        }
+      });
+      setConversations(Object.values(uniqueSenders));
+      setLoading(false);
+    } catch (err) {
+      console.error(err);
+      setLoading(false);
+    }
+  }
+
+  async function openConversation(userId) {
+    try {
+      const { data } = await api.get(`/messages/conversation/${userId}`);
+      setMessages(data.messages || []);
+      setSelectedUser(userId);
+    } catch (err) {
+      alert('Failed to load conversation');
+    }
+  }
+
+  async function sendMessage() {
+    if (!newMessage.trim() || !selectedUser) return;
+    
+    try {
+      await api.post('/messages/send', {
+        receiver_id: selectedUser,
+        content: newMessage
+      });
+      setNewMessage('');
+      await openConversation(selectedUser);
+    } catch (err) {
+      alert('Failed to send message');
+    }
+  }
+
+  if (loading) return <p className="text-slate-600">Loading...</p>;
+
+  return (
+    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      {/* Conversation List */}
+      <div className="lg:col-span-1">
+        <h3 className="font-bold text-slate-900 mb-4">Messages</h3>
+        {conversations.length === 0 ? (
+          <div className="bg-white rounded-2xl p-4 text-center border border-slate-200">
+            <p className="text-sm text-slate-600">No messages yet</p>
+          </div>
+        ) : (
+          <div className="space-y-2">
+            {conversations.map((conv) => (
+              <button
+                key={conv.user_id}
+                onClick={() => openConversation(conv.user_id)}
+                className={`w-full text-left p-4 rounded-2xl border-2 transition ${
+                  selectedUser === conv.user_id
+                    ? 'bg-blue-50 border-blue-300'
+                    : 'bg-white border-slate-200 hover:border-blue-200'
+                }`}
+              >
+                <p className="font-bold text-slate-900 text-sm">{conv.name}</p>
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* Chat Area */}
+      <div className="lg:col-span-2">
+        {selectedUser ? (
+          <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 h-96 flex flex-col">
+            <div className="flex-1 overflow-y-auto mb-4 space-y-4">
+              {messages.length === 0 ? (
+                <p className="text-center text-slate-600 text-sm">No messages yet</p>
+              ) : (
+                messages.map((msg, idx) => (
+                  <div
+                    key={idx}
+                    className={`flex ${msg.sender_id === selectedUser ? 'justify-start' : 'justify-end'}`}
+                  >
+                    <div
+                      className={`max-w-xs px-4 py-2 rounded-lg ${
+                        msg.sender_id === selectedUser
+                          ? 'bg-slate-100 text-slate-900'
+                          : 'bg-blue-600 text-white'
+                      }`}
+                    >
+                      <p className="text-sm">{msg.content}</p>
+                      <p className={`text-xs mt-1 ${
+                        msg.sender_id === selectedUser ? 'text-slate-600' : 'text-blue-100'
+                      }`}>
+                        {new Date(msg.created_at).toLocaleTimeString()}
+                      </p>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+
+            <div className="flex gap-2">
+              <input
+                type="text"
+                value={newMessage}
+                onChange={(e) => setNewMessage(e.target.value)}
+                onKeyPress={(e) => e.key === 'Enter' && sendMessage()}
+                placeholder="Type a message..."
+                className="flex-1 rounded-lg border border-slate-200 px-4 py-2 focus:ring-2 focus:ring-blue-500 outline-none"
+              />
+              <button
+                onClick={sendMessage}
+                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-medium"
+              >
+                Send
+              </button>
+            </div>
+          </div>
+        ) : (
+          <div className="bg-white rounded-2xl p-8 text-center border border-slate-200 h-96 flex items-center justify-center">
+            <p className="text-slate-600">Select a conversation to start messaging</p>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
