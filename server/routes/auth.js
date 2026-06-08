@@ -163,9 +163,8 @@ router.get('/me', authRequired, async (req, res) => {
 });
 
 // POST /api/auth/select-role
-// Allow both authenticated users and fresh Google logins to select role
-router.post('/select-role', async (req, res) => {
-  const { role, organizationId, userId } = req.body;
+router.post('/select-role', authRequired, async (req, res) => {
+  const { role, organizationId } = req.body;
 
   // Validate role
   const validRoles = ['parent', 'therapist', 'admin', 'organization_admin'];
@@ -174,11 +173,7 @@ router.post('/select-role', async (req, res) => {
   }
 
   try {
-    // Get user ID either from auth header or from body (for fresh Google logins)
-    const uid = req.user?.id || userId;
-    if (!uid) {
-      return res.status(401).json({ error: 'User not authenticated' });
-    }
+    const uid = req.user.id;
 
     const updateQuery = role === 'therapist' && organizationId
       ? `UPDATE users SET role = $1, organization_id = $2 WHERE id = $3 RETURNING id, name, email, avatar_url, role`
