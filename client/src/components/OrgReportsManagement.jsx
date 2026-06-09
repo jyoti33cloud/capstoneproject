@@ -43,10 +43,18 @@ export default function OrgReportsManagement() {
 
   async function exportToPDF() {
     try {
-      const { jsPDF } = await import('jspdf');
-      const html2canvas = (await import('html2canvas')).default;
+      const jspdfModule = await import('jspdf');
+      const html2canvasModule = await import('html2canvas');
+
+      const jsPDF = jspdfModule.jsPDF;
+      const html2canvas = html2canvasModule.default;
 
       const element = document.getElementById('report-content');
+      if (!element) {
+        alert('Report content not found');
+        return;
+      }
+
       const canvas = await html2canvas(element);
       const imgData = canvas.toDataURL('image/png');
       const pdf = new jsPDF('p', 'mm', 'a4');
@@ -55,14 +63,17 @@ export default function OrgReportsManagement() {
 
       pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
       pdf.save(`Organization-Report-${new Date().toISOString().split('T')[0]}.pdf`);
+      alert('Report exported to PDF successfully');
     } catch (err) {
-      alert('❌ Failed to export PDF. Install required libraries.');
+      console.error('PDF export error:', err);
+      alert('PDF export requires jspdf and html2canvas libraries. Install with: npm install jspdf html2canvas');
     }
   }
 
   async function exportToExcel() {
     try {
-      const XLSX = (await import('xlsx')).default;
+      const xlsxModule = await import('xlsx');
+      const XLSX = xlsxModule.default;
 
       if (activeTab === 'overview') {
         const ws = XLSX.utils.json_to_sheet([
@@ -91,8 +102,10 @@ export default function OrgReportsManagement() {
         XLSX.utils.book_append_sheet(wb, ws, 'Therapists');
         XLSX.writeFile(wb, `Therapists-Report-${new Date().toISOString().split('T')[0]}.xlsx`);
       }
+      alert('Report exported to Excel successfully');
     } catch (err) {
-      alert('❌ Failed to export Excel. Install xlsx library: npm install xlsx');
+      console.error('Excel export error:', err);
+      alert('Excel export requires xlsx library. Install with: npm install xlsx');
     }
   }
 
@@ -101,10 +114,10 @@ export default function OrgReportsManagement() {
       {/* Tabs */}
       <div className="flex gap-2 border-b border-slate-200 overflow-x-auto">
         {[
-          { id: 'overview', label: 'Overview', icon: '📊' },
-          { id: 'clients', label: 'Clients', icon: '👥' },
-          { id: 'therapists', label: 'Therapist Performance', icon: '👨‍⚕️' },
-          { id: 'trends', label: 'Trends & Revenue', icon: '📈' }
+          { id: 'overview', label: 'Overview' },
+          { id: 'clients', label: 'Clients' },
+          { id: 'therapists', label: 'Therapist Performance' },
+          { id: 'trends', label: 'Trends & Revenue' }
         ].map((tab) => (
           <button
             key={tab.id}
@@ -115,7 +128,7 @@ export default function OrgReportsManagement() {
                 : 'border-transparent text-slate-600 hover:text-slate-900'
             }`}
           >
-            {tab.icon} {tab.label}
+            {tab.label}
           </button>
         ))}
       </div>
@@ -126,13 +139,13 @@ export default function OrgReportsManagement() {
           onClick={exportToPDF}
           className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition flex items-center gap-2"
         >
-          📄 Export PDF
+          Export PDF
         </button>
         <button
           onClick={exportToExcel}
           className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition flex items-center gap-2"
         >
-          📊 Export Excel
+          Export Excel
         </button>
       </div>
 
@@ -146,141 +159,61 @@ export default function OrgReportsManagement() {
 
             {/* Clients Served */}
             <div className="bg-white rounded-lg border border-slate-200 p-6">
-              <h3 className="text-lg font-bold text-slate-900 mb-4">👥 Clients Served</h3>
+              <h3 className="text-lg font-bold text-slate-900 mb-4">Clients Served</h3>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <StatBox
-                  label="Total Clients"
-                  value={reportData.clients_served.total_clients}
-                  icon="👥"
-                />
-                <StatBox
-                  label="Active (Last 30 Days)"
-                  value={reportData.clients_served.active_clients_30d}
-                  icon="🟢"
-                />
-                <StatBox
-                  label="Active (Last 7 Days)"
-                  value={reportData.clients_served.active_clients_7d}
-                  icon="💫"
-                />
+                <StatBox label="Total Clients" value={reportData.clients_served.total_clients} />
+                <StatBox label="Active (Last 30 Days)" value={reportData.clients_served.active_clients_30d} />
+                <StatBox label="Active (Last 7 Days)" value={reportData.clients_served.active_clients_7d} />
               </div>
             </div>
 
             {/* Therapy Sessions */}
             <div className="bg-white rounded-lg border border-slate-200 p-6">
-              <h3 className="text-lg font-bold text-slate-900 mb-4">📅 Therapy Sessions</h3>
+              <h3 className="text-lg font-bold text-slate-900 mb-4">Therapy Sessions</h3>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <StatBox
-                  label="Total Sessions"
-                  value={reportData.therapy_sessions.total_sessions}
-                  icon="📅"
-                />
-                <StatBox
-                  label="Completed"
-                  value={reportData.therapy_sessions.completed_sessions}
-                  icon="✅"
-                />
-                <StatBox
-                  label="Avg Duration (Hours)"
-                  value={reportData.therapy_sessions.avg_session_duration}
-                  icon="⏱️"
-                />
+                <StatBox label="Total Sessions" value={reportData.therapy_sessions.total_sessions} />
+                <StatBox label="Completed" value={reportData.therapy_sessions.completed_sessions} />
+                <StatBox label="Avg Duration (Hours)" value={reportData.therapy_sessions.avg_session_duration} />
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-                <StatBox
-                  label="Scheduled Sessions"
-                  value={reportData.therapy_sessions.scheduled_sessions}
-                  icon="📍"
-                />
-                <StatBox
-                  label="Cancelled Sessions"
-                  value={reportData.therapy_sessions.cancelled_sessions}
-                  icon="❌"
-                />
+                <StatBox label="Scheduled Sessions" value={reportData.therapy_sessions.scheduled_sessions} />
+                <StatBox label="Cancelled Sessions" value={reportData.therapy_sessions.cancelled_sessions} />
               </div>
             </div>
 
             {/* Appointment Statistics */}
             <div className="bg-white rounded-lg border border-slate-200 p-6">
-              <h3 className="text-lg font-bold text-slate-900 mb-4">📊 Appointment Statistics</h3>
+              <h3 className="text-lg font-bold text-slate-900 mb-4">Appointment Statistics</h3>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <StatBox
-                  label="Completion Rate"
-                  value={`${reportData.appointment_statistics.completion_rate}%`}
-                  icon="✅"
-                />
-                <StatBox
-                  label="Cancellation Rate"
-                  value={`${reportData.appointment_statistics.cancellation_rate}%`}
-                  icon="❌"
-                />
-                <StatBox
-                  label="Avg Booking Advance (Days)"
-                  value={Math.round(reportData.appointment_statistics.avg_booking_advance_days || 0)}
-                  icon="📆"
-                />
+                <StatBox label="Completion Rate" value={`${reportData.appointment_statistics.completion_rate}%`} />
+                <StatBox label="Cancellation Rate" value={`${reportData.appointment_statistics.cancellation_rate}%`} />
+                <StatBox label="Avg Booking Advance (Days)" value={Math.round(reportData.appointment_statistics.avg_booking_advance_days || 0)} />
               </div>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
-                <StatBox
-                  label="Appointments Today"
-                  value={reportData.appointment_statistics.appointments_today}
-                  icon="📍"
-                />
-                <StatBox
-                  label="This Week"
-                  value={reportData.appointment_statistics.appointments_this_week}
-                  icon="📅"
-                />
-                <StatBox
-                  label="This Month"
-                  value={reportData.appointment_statistics.appointments_this_month}
-                  icon="📊"
-                />
+                <StatBox label="Appointments Today" value={reportData.appointment_statistics.appointments_today} />
+                <StatBox label="This Week" value={reportData.appointment_statistics.appointments_this_week} />
+                <StatBox label="This Month" value={reportData.appointment_statistics.appointments_this_month} />
               </div>
             </div>
 
             {/* Workshop Attendance */}
             <div className="bg-white rounded-lg border border-slate-200 p-6">
-              <h3 className="text-lg font-bold text-slate-900 mb-4">🎯 Workshop & Event Attendance</h3>
+              <h3 className="text-lg font-bold text-slate-900 mb-4">Workshop & Event Attendance</h3>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <StatBox
-                  label="Total Events"
-                  value={reportData.workshop_attendance.total_events}
-                  icon="🎪"
-                />
-                <StatBox
-                  label="Workshops"
-                  value={reportData.workshop_attendance.total_workshops}
-                  icon="🎓"
-                />
-                <StatBox
-                  label="Parent Trainings"
-                  value={reportData.workshop_attendance.parent_trainings}
-                  icon="👨‍👩‍👧"
-                />
+                <StatBox label="Total Events" value={reportData.workshop_attendance.total_events} />
+                <StatBox label="Workshops" value={reportData.workshop_attendance.total_workshops} />
+                <StatBox label="Parent Trainings" value={reportData.workshop_attendance.parent_trainings} />
               </div>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
-                <StatBox
-                  label="Total Registrations"
-                  value={reportData.workshop_attendance.total_registrations}
-                  icon="📋"
-                />
-                <StatBox
-                  label="Total Capacity"
-                  value={reportData.workshop_attendance.total_capacity}
-                  icon="🎫"
-                />
-                <StatBox
-                  label="Attendance Rate"
-                  value={`${reportData.workshop_attendance.attendance_rate}%`}
-                  icon="📊"
-                />
+                <StatBox label="Total Registrations" value={reportData.workshop_attendance.total_registrations} />
+                <StatBox label="Total Capacity" value={reportData.workshop_attendance.total_capacity} />
+                <StatBox label="Attendance Rate" value={`${reportData.workshop_attendance.attendance_rate}%`} />
               </div>
             </div>
 
             {/* Therapist Workload */}
             <div className="bg-white rounded-lg border border-slate-200 p-6">
-              <h3 className="text-lg font-bold text-slate-900 mb-4">💼 Therapist Workload</h3>
+              <h3 className="text-lg font-bold text-slate-900 mb-4">Therapist Workload</h3>
               {reportData.therapist_workload.length === 0 ? (
                 <p className="text-slate-600">No therapist data available</p>
               ) : (
@@ -315,7 +248,7 @@ export default function OrgReportsManagement() {
 
             {/* Service Utilization */}
             <div className="bg-white rounded-lg border border-slate-200 p-6">
-              <h3 className="text-lg font-bold text-slate-900 mb-4">🎯 Service Utilization</h3>
+              <h3 className="text-lg font-bold text-slate-900 mb-4">Service Utilization</h3>
               {reportData.service_utilization.length === 0 ? (
                 <p className="text-slate-600">No service data available</p>
               ) : (
@@ -429,33 +362,19 @@ export default function OrgReportsManagement() {
           <div className="space-y-6">
             <h2 className="text-2xl font-bold text-slate-900">Trends & Revenue Report</h2>
 
-            {/* Revenue Stats */}
             {revenueData && (
               <div className="bg-white rounded-lg border border-slate-200 p-6">
-                <h3 className="text-lg font-bold text-slate-900 mb-4">💰 Revenue & Utilization</h3>
+                <h3 className="text-lg font-bold text-slate-900 mb-4">Revenue & Utilization</h3>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <StatBox
-                    label="Paid Events"
-                    value={revenueData.total_paid_events}
-                    icon="🎫"
-                  />
-                  <StatBox
-                    label="Event Registrations"
-                    value={revenueData.total_event_participants}
-                    icon="👥"
-                  />
-                  <StatBox
-                    label="Capacity Utilization"
-                    value={`${revenueData.capacity_utilization}%`}
-                    icon="📊"
-                  />
+                  <StatBox label="Paid Events" value={revenueData.total_paid_events} />
+                  <StatBox label="Event Registrations" value={revenueData.total_event_participants} />
+                  <StatBox label="Capacity Utilization" value={`${revenueData.capacity_utilization}%`} />
                 </div>
               </div>
             )}
 
-            {/* Monthly Trends */}
             <div className="bg-white rounded-lg border border-slate-200 p-6">
-              <h3 className="text-lg font-bold text-slate-900 mb-4">📈 Monthly Trends (Last 12 Months)</h3>
+              <h3 className="text-lg font-bold text-slate-900 mb-4">Monthly Trends (Last 12 Months)</h3>
               {trendsData.length === 0 ? (
                 <p className="text-slate-600">No trend data</p>
               ) : (
@@ -499,10 +418,9 @@ export default function OrgReportsManagement() {
   );
 }
 
-function StatBox({ label, value, icon }) {
+function StatBox({ label, value }) {
   return (
     <div className="bg-slate-50 p-4 rounded-lg border border-slate-200">
-      <p className="text-2xl mb-2">{icon}</p>
       <p className="text-sm text-slate-600 mb-1">{label}</p>
       <p className="text-3xl font-bold text-slate-900">{value}</p>
     </div>
