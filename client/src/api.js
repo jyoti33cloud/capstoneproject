@@ -20,13 +20,16 @@ api.interceptors.response.use(
       // Force a clean re-login instead of leaving the user stranded on a
       // broken page with an invalid/expired token. Avoid redirect loops on
       // the auth pages themselves.
-      const path = window.location.pathname;
-      const isAuthPage = path === '/login' || path === '/register' || path === '/select-role';
+      // With HashRouter the active route lives in the hash (e.g. "#/login"),
+      // while pathname is always "/". Detect auth pages from the hash so a
+      // failed login 401 doesn't trigger a redirect loop.
+      const hash = window.location.hash || '';
+      const isAuthPage =
+        hash.startsWith('#/login') ||
+        hash.startsWith('#/register') ||
+        hash.startsWith('#/select-role');
       if (!isAuthPage) {
-        // Navigate to the app root (always served as index.html); the SPA
-        // router then sends unauthenticated users to /login client-side.
-        // Avoids a hard hit to /login which 404s without a host rewrite.
-        window.location.replace('/');
+        window.location.replace('/#/login');
       }
     }
     return Promise.reject(err);
