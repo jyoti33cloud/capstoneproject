@@ -16,6 +16,15 @@ api.interceptors.response.use(
     if (err?.response?.status === 401) {
       localStorage.removeItem('asha_token');
       localStorage.removeItem('asha_user');
+
+      // Force a clean re-login instead of leaving the user stranded on a
+      // broken page with an invalid/expired token. Avoid redirect loops on
+      // the auth pages themselves.
+      const path = window.location.pathname;
+      const isAuthPage = path === '/login' || path === '/register' || path === '/select-role';
+      if (!isAuthPage) {
+        window.location.replace('/login');
+      }
     }
     return Promise.reject(err);
   }

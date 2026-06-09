@@ -143,10 +143,11 @@ router.get('/:id/documents', authRequired, isAdmin, async (req, res) => {
 router.get('/:id/qualifications', authRequired, isAdmin, async (req, res) => {
   try {
     const { rows } = await pool.query(
-      `SELECT id, user_id, qualification_title, institution, completion_date, certificate_url
+      `SELECT id, user_id, title AS qualification_title, issuing_organization AS institution,
+              issue_date AS completion_date, credential_url AS certificate_url
        FROM therapist_qualifications
        WHERE user_id = $1
-       ORDER BY completion_date DESC`,
+       ORDER BY issue_date DESC NULLS LAST`,
       [req.params.id]
     );
 
@@ -164,7 +165,7 @@ router.get('/:id/profile', authRequired, isAdmin, async (req, res) => {
       pool.query('SELECT id, name, email, city, created_at FROM users WHERE id = $1', [req.params.id]),
       pool.query('SELECT * FROM therapist_profiles WHERE user_id = $1', [req.params.id]),
       pool.query('SELECT * FROM verification_documents WHERE user_id = $1 ORDER BY created_at DESC', [req.params.id]),
-      pool.query('SELECT * FROM therapist_qualifications WHERE user_id = $1 ORDER BY completion_date DESC', [req.params.id])
+      pool.query('SELECT * FROM therapist_qualifications WHERE user_id = $1 ORDER BY created_at DESC', [req.params.id])
     ]);
 
     if (!userRes.rowCount) {
