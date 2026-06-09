@@ -1,6 +1,10 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import api from '../../api';
+import AdminDashboardOverview from '../../components/AdminDashboardOverview';
+import UserManagement from '../../components/UserManagement';
+import TherapistVerificationManagement from '../../components/TherapistVerificationManagement';
+import OrganizationVerificationManagement from '../../components/OrganizationVerificationManagement';
 
 export default function AdminDashboard() {
   const { user, logout } = useAuth();
@@ -24,15 +28,15 @@ export default function AdminDashboard() {
   }
 
   const tabs = [
-    { id: 'overview', label: 'Overview', icon: '📊' },
-    { id: 'users', label: 'User Management', icon: '👥' },
-    { id: 'therapist-verify', label: 'Therapist Verification', icon: '✅' },
-    { id: 'org-verify', label: 'Organization Verification', icon: '🏢' },
-    { id: 'moderation', label: 'Content Moderation', icon: '🛡️' },
-    { id: 'resources', label: 'Resources', icon: '📚' },
-    { id: 'analytics', label: 'Analytics', icon: '📈' },
-    { id: 'audit', label: 'Audit Logs', icon: '📋' },
-    { id: 'settings', label: 'System Settings', icon: '⚙️' }
+    { id: 'overview', label: 'Overview' },
+    { id: 'users', label: 'User Management' },
+    { id: 'therapist-verify', label: 'Therapist Verification' },
+    { id: 'org-verify', label: 'Organization Verification' },
+    { id: 'moderation', label: 'Content Moderation' },
+    { id: 'resources', label: 'Resources' },
+    { id: 'analytics', label: 'Analytics' },
+    { id: 'audit', label: 'Audit Logs' },
+    { id: 'settings', label: 'System Settings' }
   ];
 
   return (
@@ -67,7 +71,7 @@ export default function AdminDashboard() {
                     : 'border-transparent text-slate-600 hover:text-slate-900'
                 }`}
               >
-                {tab.icon} {tab.label}
+                {tab.label}
               </button>
             ))}
           </div>
@@ -77,19 +81,19 @@ export default function AdminDashboard() {
       {/* Content */}
       <main className="max-w-7xl mx-auto px-6 py-8">
         {activeTab === 'overview' && (
-          <OverviewTab stats={stats} loading={loading} />
+          <AdminDashboardOverview />
         )}
 
         {activeTab === 'users' && (
-          <UserManagementTab />
+          <UserManagement />
         )}
 
         {activeTab === 'therapist-verify' && (
-          <TherapistVerificationTab />
+          <TherapistVerificationManagement />
         )}
 
         {activeTab === 'org-verify' && (
-          <OrgVerificationTab />
+          <OrganizationVerificationManagement />
         )}
 
         {activeTab === 'moderation' && (

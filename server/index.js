@@ -95,12 +95,21 @@ app.use('/api/disability-checklist', require('./routes/disability-checklist'));
 // Admin Routes
 app.use('/api/admin', require('./routes/admin'));
 app.use('/api/admin', require('./routes/admin_advanced'));
+app.use('/api/admin/dashboard', require('./routes/admin_dashboard'));
+app.use('/api/admin/users', require('./routes/admin_users'));
+app.use('/api/admin/therapist-verification', require('./routes/admin_therapist_verification'));
+app.use('/api/admin/organization-verification', require('./routes/admin_organization_verification'));
 
 // Organizations Routes
 app.use('/api/organizations', require('./routes/organizations'));
+app.use('/api/org-dashboard', require('./routes/organization_dashboard'));
+app.use('/api/org-appointments', require('./routes/org_appointments'));
+app.use('/api/org-events', require('./routes/org_events'));
+app.use('/api/org-reports', require('./routes/org_reports'));
 
 // Therapist Routes
 app.use('/api/therapists', require('./routes/therapists'));
+app.use('/api/therapist/appointments', require('./routes/therapist_appointments'));
 
 // Verification Routes
 app.use('/api/verification', require('./routes/verification'));

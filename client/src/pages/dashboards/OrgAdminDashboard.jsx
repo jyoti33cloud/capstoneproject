@@ -1,6 +1,10 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import api from '../../api';
+import OrganizationDashboard from '../../components/OrganizationDashboard';
+import OrgAppointmentsManagement from '../../components/OrgAppointmentsManagement';
+import OrgEventsManagement from '../../components/OrgEventsManagement';
+import OrgReportsManagement from '../../components/OrgReportsManagement';
 
 export default function OrgAdminDashboard() {
   const { user, logout } = useAuth();
@@ -26,13 +30,13 @@ export default function OrgAdminDashboard() {
   }
 
   const tabs = [
-    { id: 'overview', label: 'Overview', icon: '📊' },
-    { id: 'profile', label: 'Organization Profile', icon: '🏢' },
-    { id: 'team', label: 'Team Management', icon: '👥' },
-    { id: 'services', label: 'Services', icon: '⚙️' },
-    { id: 'appointments', label: 'Appointments', icon: '📅' },
-    { id: 'events', label: 'Events & Workshops', icon: '🎯' },
-    { id: 'reports', label: 'Reports', icon: '📈' }
+    { id: 'overview', label: 'Overview' },
+    { id: 'profile', label: 'Organization Profile' },
+    { id: 'team', label: 'Team Management' },
+    { id: 'services', label: 'Services' },
+    { id: 'appointments', label: 'Appointments' },
+    { id: 'events', label: 'Events & Workshops' },
+    { id: 'reports', label: 'Reports' }
   ];
 
   return (
@@ -67,7 +71,7 @@ export default function OrgAdminDashboard() {
                     : 'border-transparent text-slate-600 hover:text-slate-900'
                 }`}
               >
-                {tab.icon} {tab.label}
+                {tab.label}
               </button>
             ))}
           </div>
@@ -76,16 +80,12 @@ export default function OrgAdminDashboard() {
 
       {/* Content */}
       <main className="max-w-7xl mx-auto px-6 py-8">
-        {activeTab === 'overview' && (
-          <OverviewTab orgId={user?.organization_id} />
+        {(activeTab === 'overview' || activeTab === 'team') && (
+          <OrganizationDashboard />
         )}
 
         {activeTab === 'profile' && (
           <ProfileTab orgId={user?.organization_id} />
-        )}
-
-        {activeTab === 'team' && (
-          <TeamTab orgId={user?.organization_id} />
         )}
 
         {activeTab === 'services' && (
@@ -93,15 +93,15 @@ export default function OrgAdminDashboard() {
         )}
 
         {activeTab === 'appointments' && (
-          <AppointmentsTab orgId={user?.organization_id} />
+          <OrgAppointmentsManagement />
         )}
 
         {activeTab === 'events' && (
-          <EventsTab orgId={user?.organization_id} />
+          <OrgEventsManagement />
         )}
 
         {activeTab === 'reports' && (
-          <ReportsTab orgId={user?.organization_id} />
+          <OrgReportsManagement />
         )}
       </main>
     </div>

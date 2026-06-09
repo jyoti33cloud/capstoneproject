@@ -90,18 +90,43 @@ router.delete('/qualifications/:id', authRequired, async (req, res) => {
 // POST /api/therapists/availability
 router.post('/availability', authRequired, async (req, res) => {
   const { day_of_week, start_time, end_time } = req.body;
+
+  if (!day_of_week || !start_time) {
+    return res.status(400).json({ error: 'Day of week and start time required' });
+  }
+
   try {
-    const { rows } = await pool.query(
-      `INSERT INTO therapist_availability (user_id, day_of_week, start_time, end_time)
-       VALUES ($1, $2, $3, $4)
-       ON CONFLICT (user_id, day_of_week) DO UPDATE SET start_time = EXCLUDED.start_time, end_time = EXCLUDED.end_time
-       RETURNING *`,
-      [req.user.id, day_of_week, start_time, end_time]
+    // First check if exists
+    const exists = await pool.query(
+      `SELECT id FROM therapist_availability WHERE user_id = $1 AND day_of_week = $2`,
+      [req.user.id, day_of_week]
     );
-    res.json({ availability: rows[0] });
+
+    let rows;
+    if (exists.rowCount > 0) {
+      // Update existing
+      const result = await pool.query(
+        `UPDATE therapist_availability SET start_time = $1, end_time = $2, updated_at = NOW()
+         WHERE user_id = $3 AND day_of_week = $4
+         RETURNING *`,
+        [start_time, end_time || null, req.user.id, day_of_week]
+      );
+      rows = result.rows;
+    } else {
+      // Insert new
+      const result = await pool.query(
+        `INSERT INTO therapist_availability (user_id, day_of_week, start_time, end_time, created_at)
+         VALUES ($1, $2, $3, $4, NOW())
+         RETURNING *`,
+        [req.user.id, day_of_week, start_time, end_time || null]
+      );
+      rows = result.rows;
+    }
+
+    res.json({ availability: rows[0], message: exists.rowCount > 0 ? 'Availability updated' : 'Availability added' });
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Failed to set availability' });
+    console.error('Availability error:', err);
+    res.status(500).json({ error: 'Failed to set availability', details: err.message });
   }
 });
 
@@ -158,6 +183,169 @@ router.get('/dashboard', authRequired, async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Failed to fetch dashboard' });
+  }
+});
+
+// MESSAGING FEATURES
+
+// CREATE - Send message to parents
+router.post('/messages/send', authRequired, async (req, res) => {
+  const { parent_id, message_type, subject, content } = req.body;
+
+  if (!parent_id || !message_type || !content) {
+    return res.status(400).json({ error: 'Parent ID, message type, and content required' });
+  }
+
+  try {
+    const { rows } = await pool.query(
+      `INSERT INTO messages (sender_id, receiver_id, message_type, subject, content, created_at)
+       VALUES ($1, $2, $3, $4, $5, NOW())
+       RETURNING *`,
+      [req.user.id, parent_id, message_type, subject || null, content]
+    );
+
+    res.status(201).json({ message: rows[0], messageCreated: true });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to send message' });
+  }
+});
+
+// CREATE - Send follow-up advice
+router.post('/messages/follow-up', authRequired, async (req, res) => {
+  const { parent_id, advice_subject, advice_content } = req.body;
+
+  if (!parent_id || !advice_subject || !advice_content) {
+    return res.status(400).json({ error: 'Parent ID, subject, and content required' });
+  }
+
+  try {
+    const { rows } = await pool.query(
+      `INSERT INTO messages (sender_id, receiver_id, message_type, subject, content, created_at)
+       VALUES ($1, $2, $3, $4, $5, NOW())
+       RETURNING *`,
+      [req.user.id, parent_id, 'follow_up_advice', advice_subject, advice_content]
+    );
+
+    res.status(201).json({ message: rows[0], adviceSent: true });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to send follow-up advice' });
+  }
+});
+
+// READ - View conversations
+router.get('/messages/conversations', authRequired, async (req, res) => {
+  try {
+    const { rows } = await pool.query(
+      `SELECT DISTINCT
+         u.id, u.name, u.email, u.avatar_url,
+         (SELECT COUNT(*) FROM messages WHERE (sender_id = $1 AND receiver_id = u.id) OR (sender_id = u.id AND receiver_id = $1)) as message_count,
+         (SELECT created_at FROM messages WHERE (sender_id = $1 AND receiver_id = u.id) OR (sender_id = u.id AND receiver_id = $1) ORDER BY created_at DESC LIMIT 1) as last_message_at,
+         (SELECT is_read FROM messages WHERE sender_id = u.id AND receiver_id = $1 ORDER BY created_at DESC LIMIT 1) as unread
+       FROM users u
+       JOIN messages m ON (m.sender_id = u.id AND m.receiver_id = $1) OR (m.sender_id = $1 AND m.receiver_id = u.id)
+       WHERE u.role = 'parent'
+       ORDER BY last_message_at DESC`,
+      [req.user.id]
+    );
+
+    res.json({ conversations: rows });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to fetch conversations' });
+  }
+});
+
+// READ - Read messages with specific parent
+router.get('/messages/:parent_id', authRequired, async (req, res) => {
+  try {
+    const { rows } = await pool.query(
+      `SELECT m.*,
+              u_sender.name as sender_name, u_sender.avatar_url as sender_avatar,
+              u_receiver.name as receiver_name, u_receiver.avatar_url as receiver_avatar
+       FROM messages m
+       JOIN users u_sender ON m.sender_id = u_sender.id
+       JOIN users u_receiver ON m.receiver_id = u_receiver.id
+       WHERE (m.sender_id = $1 AND m.receiver_id = $2) OR (m.sender_id = $2 AND m.receiver_id = $1)
+       ORDER BY m.created_at DESC
+       LIMIT 100`,
+      [req.user.id, req.params.parent_id]
+    );
+
+    // Mark as read
+    await pool.query(
+      `UPDATE messages SET is_read = true, read_at = NOW()
+       WHERE receiver_id = $1 AND sender_id = $2 AND is_read = false`,
+      [req.user.id, req.params.parent_id]
+    );
+
+    res.json({ messages: rows });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to fetch messages' });
+  }
+});
+
+// UPDATE - Edit draft messages
+router.put('/messages/:id/edit', authRequired, async (req, res) => {
+  const { subject, content } = req.body;
+
+  try {
+    const { rows } = await pool.query(
+      `UPDATE messages SET subject = $1, content = $2, updated_at = NOW()
+       WHERE id = $3 AND sender_id = $4
+       RETURNING *`,
+      [subject, content, req.params.id, req.user.id]
+    );
+
+    if (!rows.length) {
+      return res.status(404).json({ error: 'Message not found or unauthorized' });
+    }
+
+    res.json({ message: rows[0], updated: true });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to edit message' });
+  }
+});
+
+// DELETE - Delete conversation
+router.delete('/messages/conversation/:parent_id', authRequired, async (req, res) => {
+  if (!window?.confirm('Are you sure you want to delete this entire conversation?')) {
+    return res.status(400).json({ error: 'Operation cancelled' });
+  }
+
+  try {
+    await pool.query(
+      `DELETE FROM messages
+       WHERE (sender_id = $1 AND receiver_id = $2) OR (sender_id = $2 AND receiver_id = $1)`,
+      [req.user.id, req.params.parent_id]
+    );
+
+    res.json({ message: 'Conversation deleted', deleted: true });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to delete conversation' });
+  }
+});
+
+// DELETE - Delete specific message
+router.delete('/messages/:id', authRequired, async (req, res) => {
+  try {
+    const { rows } = await pool.query(
+      `DELETE FROM messages WHERE id = $1 AND sender_id = $2 RETURNING id`,
+      [req.params.id, req.user.id]
+    );
+
+    if (!rows.length) {
+      return res.status(404).json({ error: 'Message not found or unauthorized' });
+    }
+
+    res.json({ message: 'Message deleted', deleted: true });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to delete message' });
   }
 });
 

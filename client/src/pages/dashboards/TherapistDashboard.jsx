@@ -1,6 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import api from '../../api';
+import TherapistDashboardOverview from '../../components/TherapistDashboardOverview';
+import TherapistAppointmentsManagement from '../../components/TherapistAppointmentsManagement';
+import TherapistMessagingAdvanced from '../../components/TherapistMessagingAdvanced';
 
 export default function TherapistDashboard() {
   const { user, logout } = useAuth();
@@ -24,14 +27,14 @@ export default function TherapistDashboard() {
   }
 
   const tabs = [
-    { id: 'overview', label: 'Overview', icon: '📊' },
-    { id: 'appointments', label: 'Appointments', icon: '📅' },
-    { id: 'profile', label: 'My Profile', icon: '👤' },
-    { id: 'qualifications', label: 'Qualifications', icon: '🎓' },
-    { id: 'availability', label: 'Availability', icon: '⏰' },
-    { id: 'progress', label: 'Progress Notes', icon: '📝' },
-    { id: 'verification', label: 'Verification', icon: '✅' },
-    { id: 'messaging', label: 'Messages', icon: '💬' }
+    { id: 'overview', label: 'Overview' },
+    { id: 'appointments', label: 'Appointments' },
+    { id: 'profile', label: 'My Profile' },
+    { id: 'qualifications', label: 'Qualifications' },
+    { id: 'availability', label: 'Availability' },
+    { id: 'progress', label: 'Progress Notes' },
+    { id: 'verification', label: 'Verification' },
+    { id: 'messaging', label: 'Messages' }
   ];
 
   return (
@@ -66,7 +69,7 @@ export default function TherapistDashboard() {
                     : 'border-transparent text-slate-600 hover:text-slate-900'
                 }`}
               >
-                {tab.icon} {tab.label}
+                {tab.label}
               </button>
             ))}
           </div>
@@ -76,28 +79,16 @@ export default function TherapistDashboard() {
       {/* Content */}
       <main className="max-w-7xl mx-auto px-6 py-8">
         {activeTab === 'overview' && (
-          <div>
-            <h2 className="text-xl font-bold text-slate-900 mb-6">Overview</h2>
-            {loading ? (
-              <p className="text-slate-600">Loading...</p>
-            ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <StatCard label="Total Appointments" value={stats?.total_appointments || 0} color="blue" />
-                <StatCard label="Upcoming Appointments" value={stats?.upcoming_appointments || 0} color="green" />
-                <StatCard label="Pending Requests" value={stats?.appointment_requests || 0} color="orange" />
-                <StatCard label="Active Patients" value={stats?.patient_count || 0} color="purple" />
-              </div>
-            )}
-          </div>
+          <TherapistDashboardOverview />
         )}
 
-        {activeTab === 'appointments' && <AppointmentsTab />}
+        {activeTab === 'appointments' && <TherapistAppointmentsManagement />}
         {activeTab === 'profile' && <ProfileTab />}
         {activeTab === 'qualifications' && <QualificationsTab />}
         {activeTab === 'availability' && <AvailabilityTab />}
         {activeTab === 'progress' && <ProgressNotesTab />}
         {activeTab === 'verification' && <VerificationTab />}
-        {activeTab === 'messaging' && <MessagingTab />}
+        {activeTab === 'messaging' && <TherapistMessagingAdvanced />}
       </main>
     </div>
   );
