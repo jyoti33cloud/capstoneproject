@@ -16,21 +16,6 @@ api.interceptors.response.use(
     if (err?.response?.status === 401) {
       localStorage.removeItem('asha_token');
       localStorage.removeItem('asha_user');
-
-      // Force a clean re-login instead of leaving the user stranded on a
-      // broken page with an invalid/expired token. Avoid redirect loops on
-      // the auth pages themselves.
-      // With HashRouter the active route lives in the hash (e.g. "#/login"),
-      // while pathname is always "/". Detect auth pages from the hash so a
-      // failed login 401 doesn't trigger a redirect loop.
-      const hash = window.location.hash || '';
-      const isAuthPage =
-        hash.startsWith('#/login') ||
-        hash.startsWith('#/register') ||
-        hash.startsWith('#/select-role');
-      if (!isAuthPage) {
-        window.location.replace('/#/login');
-      }
     }
     return Promise.reject(err);
   }
