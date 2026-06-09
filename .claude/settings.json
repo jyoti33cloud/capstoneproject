@@ -1,9 +1,0 @@
-{
-  "permissions": {
-    "allow": [
-      "Skill(update-config)",
-      "Skill(update-config:*)",
-      "Bash(psql \"postgresql://capstoneproject_db_bff1_user:TK2gcM0yUZBjP3xgicSg2cDwpQ5RuYEM@dpg-d8h9iocvikkc73f145bg-a.oregon-postgres.render.com/capstoneproject_db_bff1\")"
-    ]
-  }
-}
