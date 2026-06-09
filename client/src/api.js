@@ -23,7 +23,10 @@ api.interceptors.response.use(
       const path = window.location.pathname;
       const isAuthPage = path === '/login' || path === '/register' || path === '/select-role';
       if (!isAuthPage) {
-        window.location.replace('/login');
+        // Navigate to the app root (always served as index.html); the SPA
+        // router then sends unauthenticated users to /login client-side.
+        // Avoids a hard hit to /login which 404s without a host rewrite.
+        window.location.replace('/');
       }
     }
     return Promise.reject(err);
