@@ -49,7 +49,7 @@ export default function AdminDashboardOverview() {
       link.download = `asha-export-${type}-${new Date().toISOString().slice(0, 10)}.json`;
       link.click();
 
-      alert('✅ Export downloaded successfully!');
+      alert(' Export downloaded successfully!');
     } catch (err) {
       alert('Failed to export data');
     }
@@ -68,42 +68,42 @@ export default function AdminDashboardOverview() {
           <MetricCard
             label="Total Users"
             value={metrics?.total_users || 0}
-            icon="👥"
+            icon=""
             color="blue"
             subtext={`${usersBreakdown.find(b => b.role === 'parent')?.count || 0} parents`}
           />
           <MetricCard
             label="Total Therapists"
             value={metrics?.total_therapists || 0}
-            icon="👨‍⚕️"
+            icon=""
             color="green"
             subtext={`${metrics?.pending_verifications || 0} pending approval`}
           />
           <MetricCard
             label="Total Organizations"
             value={metrics?.total_organizations || 0}
-            icon="🏢"
+            icon=""
             color="purple"
             subtext="Centers & facilities"
           />
           <MetricCard
             label="Total Appointments"
             value={metrics?.total_appointments || 0}
-            icon="📅"
+            icon=""
             color="orange"
             subtext={`${appointmentsBreakdown.find(a => a.status === 'completed')?.count || 0} completed`}
           />
           <MetricCard
             label="Community Posts"
             value={metrics?.total_posts || 0}
-            icon="💬"
+            icon=""
             color="pink"
             subtext="Forum discussions"
           />
           <MetricCard
             label="Pending Verifications"
             value={metrics?.pending_verifications || 0}
-            icon="⏳"
+            icon=""
             color="yellow"
             subtext="Awaiting review"
             highlight={metrics?.pending_verifications > 0}
@@ -120,26 +120,26 @@ export default function AdminDashboardOverview() {
             <HealthMetric
               label="New Users (30 days)"
               value={health?.new_users_30days || 0}
-              icon="📈"
+              icon=""
             />
             <HealthMetric
               label="Appointments (30 days)"
               value={health?.appointments_30days || 0}
-              icon="📅"
+              icon=""
             />
             <HealthMetric
               label="Therapist Verification Rate"
               value={`${health?.verification_rate || 0}%`}
-              icon="✅"
+              icon=""
             />
             <HealthMetric
               label="Active Specialists (30 days)"
               value={health?.active_specialists_30days || 0}
-              icon="👨‍💼"
+              icon=""
             />
             <div className="pt-4 border-t border-slate-200">
               <p className="text-sm font-semibold text-slate-700">
-                System Status: <span className="text-green-600">✅ Healthy</span>
+                System Status: <span className="text-green-600"> Healthy</span>
               </p>
             </div>
           </div>
@@ -182,31 +182,31 @@ export default function AdminDashboardOverview() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <ActionButton
             label="Export All Data"
-            icon="📊"
+            icon=""
             onClick={() => handleExport('full')}
             color="blue"
           />
           <ActionButton
             label="Export Users"
-            icon="👥"
+            icon=""
             onClick={() => handleExport('users')}
             color="green"
           />
           <ActionButton
             label="Export Therapists"
-            icon="👨‍⚕️"
+            icon=""
             onClick={() => handleExport('therapists')}
             color="purple"
           />
           <ActionButton
             label="Export Appointments"
-            icon="📅"
+            icon=""
             onClick={() => handleExport('appointments')}
             color="orange"
           />
         </div>
         <p className="text-sm text-slate-600 mt-4">
-          💡 Exports are downloaded as JSON files for use in external tools
+           Exports are downloaded as JSON files for use in external tools
         </p>
       </div>
 
@@ -231,37 +231,37 @@ export default function AdminDashboardOverview() {
           <StatBox
             label="Total Users"
             value={platformStats?.total_users || 0}
-            icon="👥"
+            icon=""
           />
           <StatBox
             label="Therapists"
             value={platformStats?.therapists || 0}
-            icon="👨‍⚕️"
+            icon=""
           />
           <StatBox
             label="Org Admins"
             value={platformStats?.organizations_admin || 0}
-            icon="👔"
+            icon=""
           />
           <StatBox
             label="Completed Appts"
             value={platformStats?.completed_appointments || 0}
-            icon="✅"
+            icon=""
           />
           <StatBox
             label="Posts"
             value={platformStats?.community_posts || 0}
-            icon="💬"
+            icon=""
           />
           <StatBox
             label="Unique Parents"
             value={platformStats?.unique_parents || 0}
-            icon="👨‍👩‍👧"
+            icon=""
           />
           <StatBox
             label="Active Therapists"
             value={platformStats?.active_therapists || 0}
-            icon="📊"
+            icon=""
           />
         </div>
       </div>
@@ -327,13 +327,13 @@ function ActionButton({ label, icon, onClick, color }) {
 
 function ActivityRow({ activity }) {
   const actionIcons = {
-    SUSPEND_USER: '⛔',
-    BAN_USER: '🚫',
-    APPROVE_THERAPIST: '✅',
-    REJECT_THERAPIST: '❌',
-    APPROVE_ORG: '✅',
-    DELETE_POST: '🗑️',
-    default: '📋'
+    SUSPEND_USER: '',
+    BAN_USER: '',
+    APPROVE_THERAPIST: '',
+    REJECT_THERAPIST: '',
+    APPROVE_ORG: '',
+    DELETE_POST: '',
+    default: ''
   };
 
   const icon = actionIcons[activity.action] || actionIcons.default;

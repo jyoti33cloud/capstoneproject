@@ -56,13 +56,13 @@ export default function OrgAppointmentsManagement() {
       setRescheduleForm({ appointmentId: aptId, date: apt.appointment_date, start_time: apt.start_time, end_time: apt.end_time });
       setAssignForm({ appointmentId: aptId, therapist_id: apt.therapist_id });
     } catch (err) {
-      alert('❌ Failed to load appointment details');
+      alert(' Failed to load appointment details');
     }
   }
 
   async function handleReschedule() {
     if (!rescheduleForm.date || !rescheduleForm.start_time) {
-      alert('❌ Date and time required');
+      alert(' Date and time required');
       return;
     }
 
@@ -72,17 +72,17 @@ export default function OrgAppointmentsManagement() {
         start_time: rescheduleForm.start_time,
         end_time: rescheduleForm.end_time
       });
-      alert('✅ Appointment rescheduled');
+      alert(' Appointment rescheduled');
       fetchData();
       setSelectedAppointment(null);
     } catch (err) {
-      alert('❌ Failed to reschedule');
+      alert(' Failed to reschedule');
     }
   }
 
   async function handleAssignTherapist() {
     if (!assignForm.therapist_id) {
-      alert('❌ Select a therapist');
+      alert(' Select a therapist');
       return;
     }
 
@@ -90,53 +90,53 @@ export default function OrgAppointmentsManagement() {
       await api.put(`/org-appointments/${assignForm.appointmentId}/assign-therapist`, {
         therapist_id: assignForm.therapist_id
       });
-      alert('✅ Therapist assigned');
+      alert(' Therapist assigned');
       fetchData();
       setSelectedAppointment(null);
     } catch (err) {
-      alert('❌ Failed to assign therapist');
+      alert(' Failed to assign therapist');
     }
   }
 
   async function handleMarkCompleted(aptId) {
     try {
       await api.put(`/org-appointments/${aptId}/mark-completed`);
-      alert('✅ Marked completed');
+      alert(' Marked completed');
       fetchData();
       setSelectedAppointment(null);
     } catch (err) {
-      alert('❌ Failed to update');
+      alert(' Failed to update');
     }
   }
 
   async function handleCancelAppointment() {
     if (!cancelForm.appointmentId) return;
 
-    if (!window.confirm('⚠️ Cancel this appointment?')) return;
+    if (!window.confirm(' Cancel this appointment?')) return;
 
     try {
       await api.put(`/org-appointments/${cancelForm.appointmentId}/cancel`, {
         reason: cancelForm.reason || 'Cancelled by admin'
       });
-      alert('✅ Appointment cancelled');
+      alert(' Appointment cancelled');
       fetchData();
       setCancelForm({ appointmentId: '', reason: '' });
       setSelectedAppointment(null);
     } catch (err) {
-      alert('❌ Failed to cancel');
+      alert(' Failed to cancel');
     }
   }
 
   async function handleDeleteAppointment(aptId) {
-    if (!window.confirm('⚠️ Delete appointment permanently?')) return;
+    if (!window.confirm(' Delete appointment permanently?')) return;
 
     try {
       await api.delete(`/org-appointments/${aptId}`);
-      alert('✅ Appointment deleted');
+      alert(' Appointment deleted');
       fetchData();
       setSelectedAppointment(null);
     } catch (err) {
-      alert('❌ Failed to delete');
+      alert(' Failed to delete');
     }
   }
 
@@ -154,10 +154,10 @@ export default function OrgAppointmentsManagement() {
                 : 'border-transparent text-slate-600 hover:text-slate-900'
             }`}
           >
-            {tab === 'all' && '📅 All'}
+            {tab === 'all' && ' All'}
             {tab === 'upcoming' && '⏰ Upcoming'}
-            {tab === 'completed' && '✅ Completed'}
-            {tab === 'cancelled' && '❌ Cancelled'}
+            {tab === 'completed' && ' Completed'}
+            {tab === 'cancelled' && ' Cancelled'}
           </button>
         ))}
       </div>
@@ -189,7 +189,7 @@ export default function OrgAppointmentsManagement() {
                     <td className="px-6 py-3 text-sm font-medium">{apt.therapist_name}</td>
                     <td className="px-6 py-3 text-sm">{apt.parent_name}</td>
                     <td className="px-6 py-3 text-sm">{new Date(apt.appointment_date).toLocaleDateString()}</td>
-                    <td className="px-6 py-3 text-sm">{apt.start_time || '—'}</td>
+                    <td className="px-6 py-3 text-sm">{apt.start_time || ''}</td>
                     <td className="px-6 py-3 text-sm">
                       <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
                         apt.status === 'completed' ? 'bg-green-100 text-green-800' :
@@ -223,7 +223,7 @@ export default function OrgAppointmentsManagement() {
               disabled={currentPage === 0}
               className="px-4 py-2 rounded-lg bg-slate-200 hover:bg-slate-300 disabled:opacity-50"
             >
-              ← Prev
+               Prev
             </button>
             <span className="px-4 py-2 text-slate-600">Page {currentPage + 1}</span>
             <button
@@ -231,7 +231,7 @@ export default function OrgAppointmentsManagement() {
               disabled={appointments.length < limit}
               className="px-4 py-2 rounded-lg bg-slate-200 hover:bg-slate-300 disabled:opacity-50"
             >
-              Next →
+              Next 
             </button>
           </div>
         )}
@@ -239,14 +239,14 @@ export default function OrgAppointmentsManagement() {
 
       {/* Therapist Schedules */}
       <div className="bg-white rounded-lg border border-slate-200 p-6">
-        <h3 className="text-lg font-bold text-slate-900 mb-4">👥 Therapist Schedules</h3>
+        <h3 className="text-lg font-bold text-slate-900 mb-4"> Therapist Schedules</h3>
         <div className="space-y-2">
           {therapists.map((t) => (
             <div key={t.id} className="p-4 bg-slate-50 rounded-lg flex items-center justify-between">
               <div>
                 <p className="font-semibold text-slate-900">{t.name}</p>
                 <p className="text-xs text-slate-600">
-                  ⏰ {t.upcoming_count} upcoming | ✅ {t.completed_count} completed
+                  ⏰ {t.upcoming_count} upcoming | {t.completed_count} completed
                 </p>
                 {t.next_appointment && (
                   <p className="text-xs text-slate-500 mt-1">
@@ -269,7 +269,7 @@ export default function OrgAppointmentsManagement() {
                 onClick={() => setSelectedAppointment(null)}
                 className="text-2xl text-slate-400 hover:text-slate-600"
               >
-                ✕
+                
               </button>
             </div>
 
@@ -278,7 +278,7 @@ export default function OrgAppointmentsManagement() {
               <p><span className="font-semibold">Parent:</span> {selectedAppointment.parent_name}</p>
               <p><span className="font-semibold">Email:</span> {selectedAppointment.parent_email}</p>
               <p><span className="font-semibold">Date:</span> {new Date(selectedAppointment.appointment_date).toLocaleDateString()}</p>
-              <p><span className="font-semibold">Time:</span> {selectedAppointment.start_time || '—'}</p>
+              <p><span className="font-semibold">Time:</span> {selectedAppointment.start_time || ''}</p>
               <p><span className="font-semibold">Status:</span> {selectedAppointment.status}</p>
             </div>
 
@@ -342,7 +342,7 @@ export default function OrgAppointmentsManagement() {
                   onClick={() => handleMarkCompleted(selectedAppointment.id)}
                   className="flex-1 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 text-sm"
                 >
-                  ✅ Mark Completed
+                   Mark Completed
                 </button>
               )}
 
@@ -351,7 +351,7 @@ export default function OrgAppointmentsManagement() {
                   onClick={() => setCancelForm({ ...cancelForm, appointmentId: selectedAppointment.id })}
                   className="flex-1 px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 text-sm"
                 >
-                  🚫 Cancel
+                   Cancel
                 </button>
               )}
 
@@ -359,7 +359,7 @@ export default function OrgAppointmentsManagement() {
                 onClick={() => handleDeleteAppointment(selectedAppointment.id)}
                 className="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 text-sm"
               >
-                🗑️ Delete
+                 Delete
               </button>
             </div>
           </div>

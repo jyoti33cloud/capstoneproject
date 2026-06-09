@@ -79,19 +79,19 @@ export default function TherapistVerificationManagement() {
       const { data } = await api.get(`/admin/therapist-verification/${therapistId}/profile`);
       setSelectedTherapist(data);
     } catch (err) {
-      alert('❌ Failed to load therapist profile');
+      alert(' Failed to load therapist profile');
     }
   }
 
   async function handleAddTherapistManually() {
     if (!addForm.name || !addForm.email || !addForm.specializations) {
-      alert('❌ Name, email, and specializations required');
+      alert(' Name, email, and specializations required');
       return;
     }
 
     try {
       const { data } = await api.post('/admin/therapist-verification/add-manually', addForm);
-      alert('✅ Therapist added: ' + data.therapist.name);
+      alert(' Therapist added: ' + data.therapist.name);
       setAddForm({
         name: '',
         email: '',
@@ -105,13 +105,13 @@ export default function TherapistVerificationManagement() {
       setActiveTab('view-applications');
       fetchTherapists();
     } catch (err) {
-      alert('❌ ' + (err.response?.data?.error || 'Failed to add therapist'));
+      alert(' ' + (err.response?.data?.error || 'Failed to add therapist'));
     }
   }
 
   async function handleApproveTherapist() {
     if (!approvalForm.therapistId) {
-      alert('❌ Please select a therapist');
+      alert(' Please select a therapist');
       return;
     }
 
@@ -120,17 +120,17 @@ export default function TherapistVerificationManagement() {
         `/admin/therapist-verification/${approvalForm.therapistId}/approve`,
         { approval_notes: approvalForm.approval_notes }
       );
-      alert('✅ Therapist approved: ' + data.message);
+      alert(' Therapist approved: ' + data.message);
       setApprovalForm({ therapistId: '', therapistSearch: '', approval_notes: '' });
       fetchTherapists();
     } catch (err) {
-      alert('❌ Failed to approve therapist');
+      alert(' Failed to approve therapist');
     }
   }
 
   async function handleRejectTherapist() {
     if (!rejectionForm.therapistId || !rejectionForm.rejection_reason) {
-      alert('❌ Please select a therapist and provide rejection reason');
+      alert(' Please select a therapist and provide rejection reason');
       return;
     }
 
@@ -139,17 +139,17 @@ export default function TherapistVerificationManagement() {
         `/admin/therapist-verification/${rejectionForm.therapistId}/reject`,
         { rejection_reason: rejectionForm.rejection_reason }
       );
-      alert('✅ Therapist rejected');
+      alert(' Therapist rejected');
       setRejectionForm({ therapistId: '', therapistSearch: '', rejection_reason: '' });
       fetchTherapists();
     } catch (err) {
-      alert('❌ ' + (err.response?.data?.error || 'Failed to reject therapist'));
+      alert(' ' + (err.response?.data?.error || 'Failed to reject therapist'));
     }
   }
 
   async function handleRequestDocuments() {
     if (!requestDocsForm.therapistId || requestDocsForm.document_types.length === 0) {
-      alert('❌ Please select a therapist and at least one document type');
+      alert(' Please select a therapist and at least one document type');
       return;
     }
 
@@ -161,21 +161,21 @@ export default function TherapistVerificationManagement() {
           message: requestDocsForm.message
         }
       );
-      alert('✅ Document request sent to therapist');
+      alert(' Document request sent to therapist');
       setRequestDocsForm({ therapistId: '', therapistSearch: '', document_types: [], message: '' });
       fetchTherapists();
     } catch (err) {
-      alert('❌ Failed to request documents');
+      alert(' Failed to request documents');
     }
   }
 
   async function handleRevokeVerification() {
     if (!revokeForm.therapistId) {
-      alert('❌ Please select a therapist');
+      alert(' Please select a therapist');
       return;
     }
 
-    if (!window.confirm('⚠️ Are you sure? This will revoke the therapist\'s verification!')) {
+    if (!window.confirm(' Are you sure? This will revoke the therapist\'s verification!')) {
       return;
     }
 
@@ -184,26 +184,26 @@ export default function TherapistVerificationManagement() {
         `/admin/therapist-verification/${revokeForm.therapistId}/revoke-verification`,
         { revocation_reason: revokeForm.revocation_reason }
       );
-      alert('✅ Verification revoked');
+      alert(' Verification revoked');
       setRevokeForm({ therapistId: '', therapistSearch: '', revocation_reason: '' });
       fetchTherapists();
     } catch (err) {
-      alert('❌ Failed to revoke verification');
+      alert(' Failed to revoke verification');
     }
   }
 
   async function handleRemoveTherapistListing(therapistId) {
-    if (!window.confirm('⚠️ Are you sure? This will remove the therapist from the platform!')) {
+    if (!window.confirm(' Are you sure? This will remove the therapist from the platform!')) {
       return;
     }
 
     try {
       await api.delete(`/admin/therapist-verification/${therapistId}/remove-listing`);
-      alert('✅ Therapist listing removed');
+      alert(' Therapist listing removed');
       setSelectedTherapist(null);
       fetchTherapists();
     } catch (err) {
-      alert('❌ Failed to remove therapist');
+      alert(' Failed to remove therapist');
     }
   }
 
@@ -230,7 +230,7 @@ export default function TherapistVerificationManagement() {
               : 'border-transparent text-slate-600 hover:text-slate-900'
           }`}
         >
-          📋 Applications
+           Applications
         </button>
         <button
           onClick={() => setActiveTab('add-manually')}
@@ -240,7 +240,7 @@ export default function TherapistVerificationManagement() {
               : 'border-transparent text-slate-600 hover:text-slate-900'
           }`}
         >
-          ➕ Add Manually
+           Add Manually
         </button>
         <button
           onClick={() => setActiveTab('approve')}
@@ -250,7 +250,7 @@ export default function TherapistVerificationManagement() {
               : 'border-transparent text-slate-600 hover:text-slate-900'
           }`}
         >
-          ✅ Approve
+           Approve
         </button>
         <button
           onClick={() => setActiveTab('reject')}
@@ -260,7 +260,7 @@ export default function TherapistVerificationManagement() {
               : 'border-transparent text-slate-600 hover:text-slate-900'
           }`}
         >
-          ❌ Reject
+           Reject
         </button>
         <button
           onClick={() => setActiveTab('request-docs')}
@@ -270,7 +270,7 @@ export default function TherapistVerificationManagement() {
               : 'border-transparent text-slate-600 hover:text-slate-900'
           }`}
         >
-          📄 Request Docs
+           Request Docs
         </button>
         <button
           onClick={() => setActiveTab('revoke')}
@@ -280,7 +280,7 @@ export default function TherapistVerificationManagement() {
               : 'border-transparent text-slate-600 hover:text-slate-900'
           }`}
         >
-          🚫 Revoke
+           Revoke
         </button>
       </div>
 
@@ -293,7 +293,7 @@ export default function TherapistVerificationManagement() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-white p-4 rounded-lg border border-slate-200">
             <div>
               <label className="block text-sm font-medium text-slate-700 mb-2">
-                🔍 Search by Name or Email
+                 Search by Name or Email
               </label>
               <input
                 type="text"
@@ -350,7 +350,7 @@ export default function TherapistVerificationManagement() {
                     <tr key={therapist.id} className="hover:bg-slate-50">
                       <td className="px-6 py-3 text-sm text-slate-900 font-medium">{therapist.name}</td>
                       <td className="px-6 py-3 text-sm text-slate-600">{therapist.email}</td>
-                      <td className="px-6 py-3 text-sm text-slate-600">{therapist.specializations || '—'}</td>
+                      <td className="px-6 py-3 text-sm text-slate-600">{therapist.specializations || ''}</td>
                       <td className="px-6 py-3 text-sm">
                         <span className={`px-3 py-1 rounded-full text-xs font-semibold ${getStatusColor(therapist.verification_status)}`}>
                           {therapist.verification_status}
@@ -364,7 +364,7 @@ export default function TherapistVerificationManagement() {
                           onClick={() => handleViewProfile(therapist.id)}
                           className="block w-full px-3 py-1 text-xs bg-blue-500 text-white rounded hover:bg-blue-600 transition"
                         >
-                          👁️ View Full Profile
+                           View Full Profile
                         </button>
                       </td>
                     </tr>
@@ -382,7 +382,7 @@ export default function TherapistVerificationManagement() {
                 disabled={currentPage === 0}
                 className="px-4 py-2 rounded-lg bg-slate-200 hover:bg-slate-300 disabled:opacity-50"
               >
-                ← Previous
+                 Previous
               </button>
               <span className="px-4 py-2 text-slate-600">Page {currentPage + 1}</span>
               <button
@@ -390,7 +390,7 @@ export default function TherapistVerificationManagement() {
                 disabled={therapists.length < limit}
                 className="px-4 py-2 rounded-lg bg-slate-200 hover:bg-slate-300 disabled:opacity-50"
               >
-                Next →
+                Next 
               </button>
             </div>
           )}
@@ -405,13 +405,13 @@ export default function TherapistVerificationManagement() {
                     onClick={() => setSelectedTherapist(null)}
                     className="text-2xl text-slate-400 hover:text-slate-600"
                   >
-                    ✕
+                    
                   </button>
                 </div>
 
                 {/* User Info */}
                 <div className="bg-slate-50 p-4 rounded-lg">
-                  <h4 className="font-bold text-slate-900 mb-3">👤 Personal Information</h4>
+                  <h4 className="font-bold text-slate-900 mb-3"> Personal Information</h4>
                   <div className="grid grid-cols-2 gap-4">
                     <div>
                       <p className="text-xs text-slate-600">Name</p>
@@ -423,7 +423,7 @@ export default function TherapistVerificationManagement() {
                     </div>
                     <div>
                       <p className="text-xs text-slate-600">City</p>
-                      <p className="font-semibold text-slate-900">{selectedTherapist.user.city || '—'}</p>
+                      <p className="font-semibold text-slate-900">{selectedTherapist.user.city || ''}</p>
                     </div>
                     <div>
                       <p className="text-xs text-slate-600">Status</p>
@@ -437,19 +437,19 @@ export default function TherapistVerificationManagement() {
                 {/* Profile Info */}
                 {selectedTherapist.profile && (
                   <div className="bg-slate-50 p-4 rounded-lg">
-                    <h4 className="font-bold text-slate-900 mb-3">💼 Professional Information</h4>
+                    <h4 className="font-bold text-slate-900 mb-3"> Professional Information</h4>
                     <div className="grid grid-cols-2 gap-4">
                       <div>
                         <p className="text-xs text-slate-600">Specializations</p>
-                        <p className="font-semibold text-slate-900">{selectedTherapist.profile.specializations || '—'}</p>
+                        <p className="font-semibold text-slate-900">{selectedTherapist.profile.specializations || ''}</p>
                       </div>
                       <div>
                         <p className="text-xs text-slate-600">Years Experience</p>
-                        <p className="font-semibold text-slate-900">{selectedTherapist.profile.years_experience || '—'}</p>
+                        <p className="font-semibold text-slate-900">{selectedTherapist.profile.years_experience || ''}</p>
                       </div>
                       <div>
                         <p className="text-xs text-slate-600">Consultation Fee</p>
-                        <p className="font-semibold text-slate-900">₹{selectedTherapist.profile.consultation_fee || '—'}</p>
+                        <p className="font-semibold text-slate-900">₹{selectedTherapist.profile.consultation_fee || ''}</p>
                       </div>
                     </div>
                     {selectedTherapist.profile.bio && (
@@ -464,14 +464,14 @@ export default function TherapistVerificationManagement() {
                 {/* Documents */}
                 {selectedTherapist.documents && selectedTherapist.documents.length > 0 && (
                   <div className="bg-slate-50 p-4 rounded-lg">
-                    <h4 className="font-bold text-slate-900 mb-3">📄 Uploaded Documents ({selectedTherapist.documents.length})</h4>
+                    <h4 className="font-bold text-slate-900 mb-3"> Uploaded Documents ({selectedTherapist.documents.length})</h4>
                     <div className="space-y-2">
                       {selectedTherapist.documents.map((doc) => (
                         <div key={doc.id} className="flex items-center justify-between bg-white p-3 rounded border border-slate-200">
                           <div>
                             <p className="font-semibold text-slate-900 capitalize">{doc.document_type}</p>
                             <p className="text-xs text-slate-600">
-                              {doc.status} • {new Date(doc.created_at).toLocaleDateString()}
+                              {doc.status} {new Date(doc.created_at).toLocaleDateString()}
                             </p>
                           </div>
                           <a
@@ -480,7 +480,7 @@ export default function TherapistVerificationManagement() {
                             rel="noopener noreferrer"
                             className="px-3 py-1 text-xs bg-blue-500 text-white rounded hover:bg-blue-600"
                           >
-                            📥 View
+                             View
                           </a>
                         </div>
                       ))}
@@ -491,7 +491,7 @@ export default function TherapistVerificationManagement() {
                 {/* Qualifications */}
                 {selectedTherapist.qualifications && selectedTherapist.qualifications.length > 0 && (
                   <div className="bg-slate-50 p-4 rounded-lg">
-                    <h4 className="font-bold text-slate-900 mb-3">🎓 Qualifications ({selectedTherapist.qualifications.length})</h4>
+                    <h4 className="font-bold text-slate-900 mb-3"> Qualifications ({selectedTherapist.qualifications.length})</h4>
                     <div className="space-y-2">
                       {selectedTherapist.qualifications.map((qual) => (
                         <div key={qual.id} className="bg-white p-3 rounded border border-slate-200">
@@ -507,7 +507,7 @@ export default function TherapistVerificationManagement() {
                 {/* Admin Notes */}
                 {selectedTherapist.profile?.admin_notes && (
                   <div className="bg-yellow-50 border border-yellow-200 p-4 rounded-lg">
-                    <h4 className="font-bold text-yellow-900 mb-2">📝 Admin Notes</h4>
+                    <h4 className="font-bold text-yellow-900 mb-2"> Admin Notes</h4>
                     <p className="text-sm text-yellow-800">{selectedTherapist.profile.admin_notes}</p>
                   </div>
                 )}
@@ -523,7 +523,7 @@ export default function TherapistVerificationManagement() {
                       }}
                       className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition text-sm"
                     >
-                      ✅ Approve
+                       Approve
                     </button>
                   )}
                   {selectedTherapist.profile?.verification_status !== 'rejected' && (
@@ -535,7 +535,7 @@ export default function TherapistVerificationManagement() {
                       }}
                       className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition text-sm"
                     >
-                      ❌ Reject
+                       Reject
                     </button>
                   )}
                   <button
@@ -546,7 +546,7 @@ export default function TherapistVerificationManagement() {
                     }}
                     className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition text-sm"
                   >
-                    📄 Request Docs
+                     Request Docs
                   </button>
                   {selectedTherapist.profile?.verification_status === 'approved' && (
                     <button
@@ -557,14 +557,14 @@ export default function TherapistVerificationManagement() {
                       }}
                       className="px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition text-sm"
                     >
-                      🚫 Revoke
+                       Revoke
                     </button>
                   )}
                   <button
                     onClick={() => handleRemoveTherapistListing(selectedTherapist.user.id)}
                     className="px-4 py-2 bg-red-700 text-white rounded-lg hover:bg-red-800 transition text-sm"
                   >
-                    🗑️ Remove Listing
+                     Remove Listing
                   </button>
                 </div>
               </div>
@@ -576,11 +576,11 @@ export default function TherapistVerificationManagement() {
       {/* ADD THERAPIST MANUALLY TAB */}
       {activeTab === 'add-manually' && (
         <div className="max-w-2xl mx-auto bg-white rounded-lg border border-slate-200 p-6 space-y-4">
-          <h2 className="text-2xl font-bold text-slate-900">➕ Add Therapist Manually</h2>
+          <h2 className="text-2xl font-bold text-slate-900"> Add Therapist Manually</h2>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">👤 Full Name</label>
+              <label className="block text-sm font-medium text-slate-700 mb-2"> Full Name</label>
               <input
                 type="text"
                 placeholder="Dr. John Smith"
@@ -591,7 +591,7 @@ export default function TherapistVerificationManagement() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">📧 Email</label>
+              <label className="block text-sm font-medium text-slate-700 mb-2"> Email</label>
               <input
                 type="email"
                 placeholder="doctor@example.com"
@@ -602,7 +602,7 @@ export default function TherapistVerificationManagement() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">📱 Phone (Optional)</label>
+              <label className="block text-sm font-medium text-slate-700 mb-2"> Phone (Optional)</label>
               <input
                 type="text"
                 placeholder="+91 XXXXX XXXXX"
@@ -613,7 +613,7 @@ export default function TherapistVerificationManagement() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">📍 City (Optional)</label>
+              <label className="block text-sm font-medium text-slate-700 mb-2"> City (Optional)</label>
               <input
                 type="text"
                 placeholder="Mumbai"
@@ -624,7 +624,7 @@ export default function TherapistVerificationManagement() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">🎓 Specializations</label>
+              <label className="block text-sm font-medium text-slate-700 mb-2"> Specializations</label>
               <input
                 type="text"
                 placeholder="Speech Therapy, Autism Spectrum Disorder"
@@ -635,7 +635,7 @@ export default function TherapistVerificationManagement() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">📅 Years Experience</label>
+              <label className="block text-sm font-medium text-slate-700 mb-2"> Years Experience</label>
               <input
                 type="number"
                 placeholder="5"
@@ -646,7 +646,7 @@ export default function TherapistVerificationManagement() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">💰 Consultation Fee (₹)</label>
+              <label className="block text-sm font-medium text-slate-700 mb-2"> Consultation Fee (₹)</label>
               <input
                 type="number"
                 placeholder="500"
@@ -658,7 +658,7 @@ export default function TherapistVerificationManagement() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-2">📝 Bio (Optional)</label>
+            <label className="block text-sm font-medium text-slate-700 mb-2"> Bio (Optional)</label>
             <textarea
               placeholder="Brief professional bio..."
               value={addForm.bio}
@@ -672,7 +672,7 @@ export default function TherapistVerificationManagement() {
             onClick={handleAddTherapistManually}
             className="w-full px-4 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition"
           >
-            ✅ Add Therapist
+             Add Therapist
           </button>
         </div>
       )}
@@ -680,10 +680,10 @@ export default function TherapistVerificationManagement() {
       {/* APPROVE TAB */}
       {activeTab === 'approve' && (
         <div className="max-w-lg mx-auto bg-white rounded-lg border border-slate-200 p-6 space-y-4">
-          <h2 className="text-2xl font-bold text-slate-900">✅ Approve Therapist</h2>
+          <h2 className="text-2xl font-bold text-slate-900"> Approve Therapist</h2>
 
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-2">🔍 Find Therapist</label>
+            <label className="block text-sm font-medium text-slate-700 mb-2"> Find Therapist</label>
             <input
               type="text"
               placeholder="Type therapist name or email..."
@@ -727,7 +727,7 @@ export default function TherapistVerificationManagement() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-2">📝 Approval Notes (Optional)</label>
+                <label className="block text-sm font-medium text-slate-700 mb-2"> Approval Notes (Optional)</label>
                 <textarea
                   placeholder="Add any notes about this approval..."
                   value={approvalForm.approval_notes}
@@ -741,14 +741,14 @@ export default function TherapistVerificationManagement() {
                 onClick={handleApproveTherapist}
                 className="w-full px-4 py-3 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition"
               >
-                ✅ Approve Therapist
+                 Approve Therapist
               </button>
 
               <button
                 onClick={() => setApprovalForm({ therapistId: '', therapistSearch: '', approval_notes: '' })}
                 className="w-full px-4 py-2 bg-slate-300 text-slate-700 rounded-lg hover:bg-slate-400 transition"
               >
-                ✕ Cancel
+                 Cancel
               </button>
             </>
           )}
@@ -758,10 +758,10 @@ export default function TherapistVerificationManagement() {
       {/* REJECT TAB */}
       {activeTab === 'reject' && (
         <div className="max-w-lg mx-auto bg-white rounded-lg border border-slate-200 p-6 space-y-4">
-          <h2 className="text-2xl font-bold text-slate-900">❌ Reject Therapist</h2>
+          <h2 className="text-2xl font-bold text-slate-900"> Reject Therapist</h2>
 
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-2">🔍 Find Therapist</label>
+            <label className="block text-sm font-medium text-slate-700 mb-2"> Find Therapist</label>
             <input
               type="text"
               placeholder="Type therapist name or email..."
@@ -805,7 +805,7 @@ export default function TherapistVerificationManagement() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-2">⚠️ Rejection Reason</label>
+                <label className="block text-sm font-medium text-slate-700 mb-2"> Rejection Reason</label>
                 <textarea
                   placeholder="Explain why this therapist is being rejected..."
                   value={rejectionForm.rejection_reason}
@@ -819,14 +819,14 @@ export default function TherapistVerificationManagement() {
                 onClick={handleRejectTherapist}
                 className="w-full px-4 py-3 bg-red-600 text-white font-semibold rounded-lg hover:bg-red-700 transition"
               >
-                ❌ Reject Therapist
+                 Reject Therapist
               </button>
 
               <button
                 onClick={() => setRejectionForm({ therapistId: '', therapistSearch: '', rejection_reason: '' })}
                 className="w-full px-4 py-2 bg-slate-300 text-slate-700 rounded-lg hover:bg-slate-400 transition"
               >
-                ✕ Cancel
+                 Cancel
               </button>
             </>
           )}
@@ -836,10 +836,10 @@ export default function TherapistVerificationManagement() {
       {/* REQUEST DOCUMENTS TAB */}
       {activeTab === 'request-docs' && (
         <div className="max-w-lg mx-auto bg-white rounded-lg border border-slate-200 p-6 space-y-4">
-          <h2 className="text-2xl font-bold text-slate-900">📄 Request Additional Documents</h2>
+          <h2 className="text-2xl font-bold text-slate-900"> Request Additional Documents</h2>
 
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-2">🔍 Find Therapist</label>
+            <label className="block text-sm font-medium text-slate-700 mb-2"> Find Therapist</label>
             <input
               type="text"
               placeholder="Type therapist name or email..."
@@ -883,7 +883,7 @@ export default function TherapistVerificationManagement() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-2">📄 Document Types Needed</label>
+                <label className="block text-sm font-medium text-slate-700 mb-2"> Document Types Needed</label>
                 <div className="space-y-2">
                   {['license', 'certificate', 'degree', 'registration', 'other'].map((type) => (
                     <label key={type} className="flex items-center gap-2">
@@ -911,7 +911,7 @@ export default function TherapistVerificationManagement() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-2">💬 Message (Optional)</label>
+                <label className="block text-sm font-medium text-slate-700 mb-2"> Message (Optional)</label>
                 <textarea
                   placeholder="Additional message to therapist..."
                   value={requestDocsForm.message}
@@ -926,14 +926,14 @@ export default function TherapistVerificationManagement() {
                 disabled={requestDocsForm.document_types.length === 0}
                 className="w-full px-4 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition disabled:opacity-50"
               >
-                📄 Request Documents
+                 Request Documents
               </button>
 
               <button
                 onClick={() => setRequestDocsForm({ therapistId: '', therapistSearch: '', document_types: [], message: '' })}
                 className="w-full px-4 py-2 bg-slate-300 text-slate-700 rounded-lg hover:bg-slate-400 transition"
               >
-                ✕ Cancel
+                 Cancel
               </button>
             </>
           )}
@@ -943,14 +943,14 @@ export default function TherapistVerificationManagement() {
       {/* REVOKE TAB */}
       {activeTab === 'revoke' && (
         <div className="max-w-lg mx-auto bg-white rounded-lg border border-slate-200 p-6 space-y-4">
-          <h2 className="text-2xl font-bold text-slate-900">🚫 Revoke Verification</h2>
+          <h2 className="text-2xl font-bold text-slate-900"> Revoke Verification</h2>
 
           <div className="bg-red-50 border border-red-200 p-4 rounded-lg">
-            <p className="text-sm text-red-800">⚠️ This will revoke the therapist's verification. They will need to reapply.</p>
+            <p className="text-sm text-red-800"> This will revoke the therapist's verification. They will need to reapply.</p>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-2">🔍 Find Therapist</label>
+            <label className="block text-sm font-medium text-slate-700 mb-2"> Find Therapist</label>
             <input
               type="text"
               placeholder="Type therapist name or email..."
@@ -994,7 +994,7 @@ export default function TherapistVerificationManagement() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-2">⚠️ Revocation Reason</label>
+                <label className="block text-sm font-medium text-slate-700 mb-2"> Revocation Reason</label>
                 <textarea
                   placeholder="Explain why verification is being revoked..."
                   value={revokeForm.revocation_reason}
@@ -1008,14 +1008,14 @@ export default function TherapistVerificationManagement() {
                 onClick={handleRevokeVerification}
                 className="w-full px-4 py-3 bg-red-600 text-white font-semibold rounded-lg hover:bg-red-700 transition"
               >
-                🚫 Revoke Verification
+                 Revoke Verification
               </button>
 
               <button
                 onClick={() => setRevokeForm({ therapistId: '', therapistSearch: '', revocation_reason: '' })}
                 className="w-full px-4 py-2 bg-slate-300 text-slate-700 rounded-lg hover:bg-slate-400 transition"
               >
-                ✕ Cancel
+                 Cancel
               </button>
             </>
           )}

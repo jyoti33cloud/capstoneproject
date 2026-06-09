@@ -16,25 +16,25 @@ export default function RoleSelector({ onRoleSelected }) {
     {
       id: 'parent',
       label: 'Parent / Guardian',
-      icon: '👨‍👩‍👧‍👦',
+      icon: '',
       desc: 'Access resources and book therapies for your child'
     },
     {
       id: 'therapist',
       label: 'Therapist / Specialist',
-      icon: '👨‍⚕️',
+      icon: '',
       desc: 'Manage client sessions and create treatment plans'
     },
     {
       id: 'admin',
       label: 'Admin',
-      icon: '⚙️',
+      icon: '',
       desc: 'Manage platform and user accounts'
     },
     {
       id: 'organization_admin',
       label: 'Organization Manager',
-      icon: '🏥',
+      icon: '',
       desc: 'Manage therapy center or special education center'
     }
   ];
@@ -92,7 +92,7 @@ export default function RoleSelector({ onRoleSelected }) {
             onClick={() => setShowOrgForm(false)}
             className="mb-6 text-sm text-slate-600 hover:text-slate-900 font-medium"
           >
-            ← Back to roles
+             Back to roles
           </button>
 
           <h2 className="text-2xl font-bold text-brand-600 mb-2">Create Organization</h2>

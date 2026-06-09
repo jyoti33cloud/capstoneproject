@@ -59,24 +59,24 @@ export default function TherapistAppointmentsManagement() {
       setSelectedAppointment(data);
       setNotesForm({ appointmentId, notes: data.notes?.notes || '' });
     } catch (err) {
-      alert('❌ Failed to load appointment details');
+      alert(' Failed to load appointment details');
     }
   }
 
   async function handleAcceptAppointment(appointmentId) {
     try {
       await api.put(`/therapist/appointments/${appointmentId}/accept`);
-      alert('✅ Appointment accepted');
+      alert(' Appointment accepted');
       fetchAppointments();
       setSelectedAppointment(null);
     } catch (err) {
-      alert('❌ Failed to accept appointment');
+      alert(' Failed to accept appointment');
     }
   }
 
   async function handleRejectAppointment() {
     if (!reasonForm.appointmentId) {
-      alert('❌ Please select an appointment');
+      alert(' Please select an appointment');
       return;
     }
 
@@ -85,17 +85,17 @@ export default function TherapistAppointmentsManagement() {
         `/therapist/appointments/${reasonForm.appointmentId}/reject`,
         { reason: reasonForm.reason || 'Rejected by therapist' }
       );
-      alert('✅ Appointment rejected');
+      alert(' Appointment rejected');
       fetchAppointments();
       setReasonForm({ appointmentId: '', reason: '' });
     } catch (err) {
-      alert('❌ Failed to reject appointment');
+      alert(' Failed to reject appointment');
     }
   }
 
   async function handleRescheduleAppointment() {
     if (!rescheduleForm.appointmentId || !rescheduleForm.appointment_date || !rescheduleForm.start_time) {
-      alert('❌ Please fill in all required fields');
+      alert(' Please fill in all required fields');
       return;
     }
 
@@ -108,29 +108,29 @@ export default function TherapistAppointmentsManagement() {
           end_time: rescheduleForm.end_time || null
         }
       );
-      alert('✅ Appointment rescheduled');
+      alert(' Appointment rescheduled');
       fetchAppointments();
       setRescheduleForm({ appointmentId: '', appointment_date: '', start_time: '', end_time: '' });
       setSelectedAppointment(null);
     } catch (err) {
-      alert('❌ Failed to reschedule appointment');
+      alert(' Failed to reschedule appointment');
     }
   }
 
   async function handleMarkCompleted(appointmentId) {
     try {
       await api.put(`/therapist/appointments/${appointmentId}/complete`);
-      alert('✅ Appointment marked as completed');
+      alert(' Appointment marked as completed');
       fetchAppointments();
       setSelectedAppointment(null);
     } catch (err) {
-      alert('❌ Failed to mark appointment completed');
+      alert(' Failed to mark appointment completed');
     }
   }
 
   async function handleSaveNotes() {
     if (!notesForm.appointmentId || !notesForm.notes) {
-      alert('❌ Please add notes');
+      alert(' Please add notes');
       return;
     }
 
@@ -139,22 +139,22 @@ export default function TherapistAppointmentsManagement() {
         `/therapist/appointments/${notesForm.appointmentId}/notes`,
         { notes: notesForm.notes }
       );
-      alert('✅ Notes saved');
+      alert(' Notes saved');
       fetchAppointments();
       setSelectedAppointment(null);
       setNotesForm({ appointmentId: '', notes: '' });
     } catch (err) {
-      alert('❌ Failed to save notes');
+      alert(' Failed to save notes');
     }
   }
 
   async function handleCancelAppointment() {
     if (!reasonForm.appointmentId) {
-      alert('❌ Please select an appointment');
+      alert(' Please select an appointment');
       return;
     }
 
-    if (!window.confirm('⚠️ Are you sure you want to cancel this appointment?')) {
+    if (!window.confirm(' Are you sure you want to cancel this appointment?')) {
       return;
     }
 
@@ -163,21 +163,21 @@ export default function TherapistAppointmentsManagement() {
         `/therapist/appointments/${reasonForm.appointmentId}/cancel`,
         { reason: reasonForm.reason || 'Cancelled by therapist' }
       );
-      alert('✅ Appointment cancelled');
+      alert(' Appointment cancelled');
       fetchAppointments();
       setReasonForm({ appointmentId: '', reason: '' });
       setSelectedAppointment(null);
     } catch (err) {
-      alert('❌ Failed to cancel appointment');
+      alert(' Failed to cancel appointment');
     }
   }
 
   async function handleSendReminder(appointmentId) {
     try {
       const { data } = await api.post(`/therapist/appointments/${appointmentId}/send-reminder`);
-      alert('✅ ' + data.message);
+      alert(' ' + data.message);
     } catch (err) {
-      alert('❌ Failed to send reminder');
+      alert(' Failed to send reminder');
     }
   }
 
@@ -193,10 +193,10 @@ export default function TherapistAppointmentsManagement() {
 
   const getStatusLabel = (status) => {
     const labels = {
-      pending: '⏳ Pending',
-      confirmed: '✅ Confirmed',
-      completed: '✔️ Completed',
-      cancelled: '❌ Cancelled'
+      pending: ' Pending',
+      confirmed: ' Confirmed',
+      completed: ' Completed',
+      cancelled: ' Cancelled'
     };
     return labels[status] || status;
   };
@@ -213,7 +213,7 @@ export default function TherapistAppointmentsManagement() {
               : 'border-transparent text-slate-600 hover:text-slate-900'
           }`}
         >
-          📅 All Appointments
+           All Appointments
         </button>
         <button
           onClick={() => { setActiveTab('pending'); setCurrentPage(0); }}
@@ -223,7 +223,7 @@ export default function TherapistAppointmentsManagement() {
               : 'border-transparent text-slate-600 hover:text-slate-900'
           }`}
         >
-          ⏳ Pending
+           Pending
         </button>
         <button
           onClick={() => { setActiveTab('confirmed'); setCurrentPage(0); }}
@@ -233,7 +233,7 @@ export default function TherapistAppointmentsManagement() {
               : 'border-transparent text-slate-600 hover:text-slate-900'
           }`}
         >
-          ✅ Confirmed
+           Confirmed
         </button>
         <button
           onClick={() => { setActiveTab('completed'); setCurrentPage(0); }}
@@ -243,7 +243,7 @@ export default function TherapistAppointmentsManagement() {
               : 'border-transparent text-slate-600 hover:text-slate-900'
           }`}
         >
-          ✔️ Completed
+           Completed
         </button>
         <button
           onClick={() => { setActiveTab('cancelled'); setCurrentPage(0); }}
@@ -253,7 +253,7 @@ export default function TherapistAppointmentsManagement() {
               : 'border-transparent text-slate-600 hover:text-slate-900'
           }`}
         >
-          ❌ Cancelled
+           Cancelled
         </button>
       </div>
 
@@ -284,7 +284,7 @@ export default function TherapistAppointmentsManagement() {
                     <td className="px-6 py-3 text-sm text-slate-600">
                       {new Date(apt.appointment_date).toLocaleDateString()}
                     </td>
-                    <td className="px-6 py-3 text-sm text-slate-600">{apt.start_time || '—'}</td>
+                    <td className="px-6 py-3 text-sm text-slate-600">{apt.start_time || ''}</td>
                     <td className="px-6 py-3 text-sm">
                       <span className={`px-3 py-1 rounded-full text-xs font-semibold ${getStatusColor(apt.status)}`}>
                         {getStatusLabel(apt.status)}
@@ -295,7 +295,7 @@ export default function TherapistAppointmentsManagement() {
                         onClick={() => handleViewDetails(apt.id)}
                         className="block w-full px-3 py-1 text-xs bg-blue-500 text-white rounded hover:bg-blue-600 transition"
                       >
-                        👁️ View Details
+                         View Details
                       </button>
                     </td>
                   </tr>
@@ -313,7 +313,7 @@ export default function TherapistAppointmentsManagement() {
               disabled={currentPage === 0}
               className="px-4 py-2 rounded-lg bg-slate-200 hover:bg-slate-300 disabled:opacity-50"
             >
-              ← Previous
+               Previous
             </button>
             <span className="px-4 py-2 text-slate-600">Page {currentPage + 1}</span>
             <button
@@ -321,7 +321,7 @@ export default function TherapistAppointmentsManagement() {
               disabled={appointments.length < limit}
               className="px-4 py-2 rounded-lg bg-slate-200 hover:bg-slate-300 disabled:opacity-50"
             >
-              Next →
+              Next 
             </button>
           </div>
         )}
@@ -337,13 +337,13 @@ export default function TherapistAppointmentsManagement() {
                 onClick={() => setSelectedAppointment(null)}
                 className="text-2xl text-slate-400 hover:text-slate-600"
               >
-                ✕
+                
               </button>
             </div>
 
             {/* Appointment Info */}
             <div className="bg-slate-50 p-4 rounded-lg">
-              <h4 className="font-bold text-slate-900 mb-3">📅 Appointment Information</h4>
+              <h4 className="font-bold text-slate-900 mb-3"> Appointment Information</h4>
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <p className="text-xs text-slate-600">Parent</p>
@@ -361,7 +361,7 @@ export default function TherapistAppointmentsManagement() {
                 </div>
                 <div>
                   <p className="text-xs text-slate-600">Time</p>
-                  <p className="font-semibold text-slate-900">{selectedAppointment.appointment.start_time || '—'}</p>
+                  <p className="font-semibold text-slate-900">{selectedAppointment.appointment.start_time || ''}</p>
                 </div>
                 <div className="col-span-2">
                   <p className="text-xs text-slate-600">Status</p>
@@ -374,7 +374,7 @@ export default function TherapistAppointmentsManagement() {
 
             {/* Notes Section */}
             <div className="bg-slate-50 p-4 rounded-lg">
-              <h4 className="font-bold text-slate-900 mb-3">📝 Appointment Notes</h4>
+              <h4 className="font-bold text-slate-900 mb-3"> Appointment Notes</h4>
               <textarea
                 value={notesForm.notes}
                 onChange={(e) => setNotesForm({ ...notesForm, notes: e.target.value, appointmentId: selectedAppointment.appointment.id })}
@@ -387,7 +387,7 @@ export default function TherapistAppointmentsManagement() {
             {/* Reschedule Form */}
             {selectedAppointment.appointment.status !== 'cancelled' && selectedAppointment.appointment.status !== 'completed' && (
               <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
-                <h4 className="font-bold text-slate-900 mb-3">🔄 Reschedule Appointment</h4>
+                <h4 className="font-bold text-slate-900 mb-3"> Reschedule Appointment</h4>
                 <div className="grid grid-cols-3 gap-3">
                   <div>
                     <label className="block text-sm font-medium text-slate-700 mb-1">New Date</label>
@@ -440,13 +440,13 @@ export default function TherapistAppointmentsManagement() {
                     onClick={() => handleAcceptAppointment(selectedAppointment.appointment.id)}
                     className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition text-sm"
                   >
-                    ✅ Accept
+                     Accept
                   </button>
                   <button
                     onClick={() => setReasonForm({ ...reasonForm, appointmentId: selectedAppointment.appointment.id })}
                     className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition text-sm"
                   >
-                    ❌ Reject
+                     Reject
                   </button>
                 </>
               )}
@@ -457,13 +457,13 @@ export default function TherapistAppointmentsManagement() {
                     onClick={handleRescheduleAppointment}
                     className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition text-sm"
                   >
-                    🔄 Reschedule
+                     Reschedule
                   </button>
                   <button
                     onClick={() => handleSendReminder(selectedAppointment.appointment.id)}
                     className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition text-sm"
                   >
-                    🔔 Send Reminder
+                     Send Reminder
                   </button>
                 </>
               )}
@@ -473,7 +473,7 @@ export default function TherapistAppointmentsManagement() {
                   onClick={() => handleMarkCompleted(selectedAppointment.appointment.id)}
                   className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition text-sm"
                 >
-                  ✔️ Mark Completed
+                   Mark Completed
                 </button>
               )}
 
@@ -481,7 +481,7 @@ export default function TherapistAppointmentsManagement() {
                 onClick={handleSaveNotes}
                 className="px-4 py-2 bg-slate-600 text-white rounded-lg hover:bg-slate-700 transition text-sm"
               >
-                💾 Save Notes
+                 Save Notes
               </button>
 
               {selectedAppointment.appointment.status !== 'cancelled' && (
@@ -489,7 +489,7 @@ export default function TherapistAppointmentsManagement() {
                   onClick={() => setReasonForm({ ...reasonForm, appointmentId: selectedAppointment.appointment.id })}
                   className="px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition text-sm"
                 >
-                  🗑️ Cancel
+                   Cancel
                 </button>
               )}
             </div>
@@ -514,13 +514,13 @@ export default function TherapistAppointmentsManagement() {
                 onClick={handleRejectAppointment}
                 className="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition"
               >
-                ❌ Reject/Cancel
+                 Reject/Cancel
               </button>
               <button
                 onClick={() => setReasonForm({ appointmentId: '', reason: '' })}
                 className="flex-1 px-4 py-2 bg-slate-300 text-slate-700 rounded-lg hover:bg-slate-400 transition"
               >
-                ✕ Close
+                 Close
               </button>
             </div>
           </div>

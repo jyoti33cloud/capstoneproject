@@ -87,19 +87,19 @@ export default function OrganizationVerificationManagement() {
       const { data } = await api.get(`/admin/organization-verification/${orgId}/profile`);
       setSelectedOrganization(data);
     } catch (err) {
-      alert('❌ Failed to load organization profile');
+      alert(' Failed to load organization profile');
     }
   }
 
   async function handleAddOrganization() {
     if (!addForm.name || !addForm.type || !addForm.email || !addForm.location) {
-      alert('❌ Name, type, email, and location required');
+      alert(' Name, type, email, and location required');
       return;
     }
 
     try {
       const { data } = await api.post('/admin/organization-verification/add', addForm);
-      alert('✅ Organization added: ' + data.organization.name);
+      alert(' Organization added: ' + data.organization.name);
       setAddForm({
         name: '',
         type: 'therapy_center',
@@ -114,13 +114,13 @@ export default function OrganizationVerificationManagement() {
       setActiveTab('view-applications');
       fetchOrganizations();
     } catch (err) {
-      alert('❌ ' + (err.response?.data?.error || 'Failed to add organization'));
+      alert(' ' + (err.response?.data?.error || 'Failed to add organization'));
     }
   }
 
   async function handleApproveOrganization() {
     if (!approvalForm.orgId) {
-      alert('❌ Please select an organization');
+      alert(' Please select an organization');
       return;
     }
 
@@ -129,17 +129,17 @@ export default function OrganizationVerificationManagement() {
         `/admin/organization-verification/${approvalForm.orgId}/approve`,
         { approval_notes: approvalForm.approval_notes }
       );
-      alert('✅ Organization approved');
+      alert(' Organization approved');
       setApprovalForm({ orgId: '', orgSearch: '', approval_notes: '' });
       fetchOrganizations();
     } catch (err) {
-      alert('❌ Failed to approve organization');
+      alert(' Failed to approve organization');
     }
   }
 
   async function handleRejectOrganization() {
     if (!rejectionForm.orgId || !rejectionForm.rejection_reason) {
-      alert('❌ Please select an organization and provide rejection reason');
+      alert(' Please select an organization and provide rejection reason');
       return;
     }
 
@@ -148,17 +148,17 @@ export default function OrganizationVerificationManagement() {
         `/admin/organization-verification/${rejectionForm.orgId}/reject`,
         { rejection_reason: rejectionForm.rejection_reason }
       );
-      alert('✅ Organization rejected');
+      alert(' Organization rejected');
       setRejectionForm({ orgId: '', orgSearch: '', rejection_reason: '' });
       fetchOrganizations();
     } catch (err) {
-      alert('❌ Failed to reject organization');
+      alert(' Failed to reject organization');
     }
   }
 
   async function handleUpdateOrganization() {
     if (!updateForm.orgId) {
-      alert('❌ Please select an organization');
+      alert(' Please select an organization');
       return;
     }
 
@@ -178,7 +178,7 @@ export default function OrganizationVerificationManagement() {
         `/admin/organization-verification/${updateForm.orgId}/update`,
         updateData
       );
-      alert('✅ Organization updated');
+      alert(' Organization updated');
       setUpdateForm({
         orgId: '',
         orgSearch: '',
@@ -194,17 +194,17 @@ export default function OrganizationVerificationManagement() {
       });
       fetchOrganizations();
     } catch (err) {
-      alert('❌ Failed to update organization');
+      alert(' Failed to update organization');
     }
   }
 
   async function handleSuspendOrganization() {
     if (!suspendForm.orgId) {
-      alert('❌ Please select an organization');
+      alert(' Please select an organization');
       return;
     }
 
-    if (!window.confirm('⚠️ Are you sure? This will suspend the organization!')) {
+    if (!window.confirm(' Are you sure? This will suspend the organization!')) {
       return;
     }
 
@@ -213,26 +213,26 @@ export default function OrganizationVerificationManagement() {
         `/admin/organization-verification/${suspendForm.orgId}/suspend`,
         { suspension_reason: suspendForm.suspension_reason }
       );
-      alert('✅ Organization suspended');
+      alert(' Organization suspended');
       setSuspendForm({ orgId: '', orgSearch: '', suspension_reason: '' });
       fetchOrganizations();
     } catch (err) {
-      alert('❌ Failed to suspend organization');
+      alert(' Failed to suspend organization');
     }
   }
 
   async function handleRemoveOrganization(orgId) {
-    if (!window.confirm('⚠️ Are you sure? This will PERMANENTLY remove the organization!')) {
+    if (!window.confirm(' Are you sure? This will PERMANENTLY remove the organization!')) {
       return;
     }
 
     try {
       await api.delete(`/admin/organization-verification/${orgId}/remove`);
-      alert('✅ Organization removed');
+      alert(' Organization removed');
       setSelectedOrganization(null);
       fetchOrganizations();
     } catch (err) {
-      alert('❌ Failed to remove organization');
+      alert(' Failed to remove organization');
     }
   }
 
@@ -268,7 +268,7 @@ export default function OrganizationVerificationManagement() {
               : 'border-transparent text-slate-600 hover:text-slate-900'
           }`}
         >
-          📋 Applications
+           Applications
         </button>
         <button
           onClick={() => setActiveTab('add-organization')}
@@ -278,7 +278,7 @@ export default function OrganizationVerificationManagement() {
               : 'border-transparent text-slate-600 hover:text-slate-900'
           }`}
         >
-          ➕ Add Organization
+           Add Organization
         </button>
         <button
           onClick={() => setActiveTab('approve')}
@@ -288,7 +288,7 @@ export default function OrganizationVerificationManagement() {
               : 'border-transparent text-slate-600 hover:text-slate-900'
           }`}
         >
-          ✅ Approve
+           Approve
         </button>
         <button
           onClick={() => setActiveTab('reject')}
@@ -298,7 +298,7 @@ export default function OrganizationVerificationManagement() {
               : 'border-transparent text-slate-600 hover:text-slate-900'
           }`}
         >
-          ❌ Reject
+           Reject
         </button>
         <button
           onClick={() => setActiveTab('update')}
@@ -308,7 +308,7 @@ export default function OrganizationVerificationManagement() {
               : 'border-transparent text-slate-600 hover:text-slate-900'
           }`}
         >
-          ✏️ Update Info
+           Update Info
         </button>
         <button
           onClick={() => setActiveTab('suspend')}
@@ -318,7 +318,7 @@ export default function OrganizationVerificationManagement() {
               : 'border-transparent text-slate-600 hover:text-slate-900'
           }`}
         >
-          ⏸️ Suspend
+          ⏸ Suspend
         </button>
       </div>
 
@@ -331,7 +331,7 @@ export default function OrganizationVerificationManagement() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-white p-4 rounded-lg border border-slate-200">
             <div>
               <label className="block text-sm font-medium text-slate-700 mb-2">
-                🔍 Search by Name or Email
+                 Search by Name or Email
               </label>
               <input
                 type="text"
@@ -389,8 +389,8 @@ export default function OrganizationVerificationManagement() {
                     <tr key={org.id} className="hover:bg-slate-50">
                       <td className="px-6 py-3 text-sm text-slate-900 font-medium">{org.name}</td>
                       <td className="px-6 py-3 text-sm text-slate-600">{getTypeLabel(org.type)}</td>
-                      <td className="px-6 py-3 text-sm text-slate-600">{org.email || '—'}</td>
-                      <td className="px-6 py-3 text-sm text-slate-600">{org.location || '—'}</td>
+                      <td className="px-6 py-3 text-sm text-slate-600">{org.email || ''}</td>
+                      <td className="px-6 py-3 text-sm text-slate-600">{org.location || ''}</td>
                       <td className="px-6 py-3 text-sm">
                         <span className={`px-3 py-1 rounded-full text-xs font-semibold ${getStatusColor(org.verification_status)}`}>
                           {org.verification_status}
@@ -404,7 +404,7 @@ export default function OrganizationVerificationManagement() {
                           onClick={() => handleViewProfile(org.id)}
                           className="block w-full px-3 py-1 text-xs bg-blue-500 text-white rounded hover:bg-blue-600 transition"
                         >
-                          👁️ View Full Profile
+                           View Full Profile
                         </button>
                       </td>
                     </tr>
@@ -422,7 +422,7 @@ export default function OrganizationVerificationManagement() {
                 disabled={currentPage === 0}
                 className="px-4 py-2 rounded-lg bg-slate-200 hover:bg-slate-300 disabled:opacity-50"
               >
-                ← Previous
+                 Previous
               </button>
               <span className="px-4 py-2 text-slate-600">Page {currentPage + 1}</span>
               <button
@@ -430,7 +430,7 @@ export default function OrganizationVerificationManagement() {
                 disabled={organizations.length < limit}
                 className="px-4 py-2 rounded-lg bg-slate-200 hover:bg-slate-300 disabled:opacity-50"
               >
-                Next →
+                Next 
               </button>
             </div>
           )}
@@ -445,13 +445,13 @@ export default function OrganizationVerificationManagement() {
                     onClick={() => setSelectedOrganization(null)}
                     className="text-2xl text-slate-400 hover:text-slate-600"
                   >
-                    ✕
+                    
                   </button>
                 </div>
 
                 {/* Organization Info */}
                 <div className="bg-slate-50 p-4 rounded-lg">
-                  <h4 className="font-bold text-slate-900 mb-3">🏢 Organization Information</h4>
+                  <h4 className="font-bold text-slate-900 mb-3"> Organization Information</h4>
                   <div className="grid grid-cols-2 gap-4">
                     <div>
                       <p className="text-xs text-slate-600">Name</p>
@@ -468,7 +468,7 @@ export default function OrganizationVerificationManagement() {
                     <div>
                       <p className="text-xs text-slate-600">City / State</p>
                       <p className="font-semibold text-slate-900">
-                        {selectedOrganization.organization.city}, {selectedOrganization.organization.state || '—'}
+                        {selectedOrganization.organization.city}, {selectedOrganization.organization.state || ''}
                       </p>
                     </div>
                   </div>
@@ -477,19 +477,19 @@ export default function OrganizationVerificationManagement() {
                 {/* Details */}
                 {selectedOrganization.details && (
                   <div className="bg-slate-50 p-4 rounded-lg">
-                    <h4 className="font-bold text-slate-900 mb-3">📞 Contact Information</h4>
+                    <h4 className="font-bold text-slate-900 mb-3"> Contact Information</h4>
                     <div className="grid grid-cols-2 gap-4">
                       <div>
                         <p className="text-xs text-slate-600">Email</p>
-                        <p className="font-semibold text-slate-900">{selectedOrganization.details.email || '—'}</p>
+                        <p className="font-semibold text-slate-900">{selectedOrganization.details.email || ''}</p>
                       </div>
                       <div>
                         <p className="text-xs text-slate-600">Phone</p>
-                        <p className="font-semibold text-slate-900">{selectedOrganization.details.phone_1 || '—'}</p>
+                        <p className="font-semibold text-slate-900">{selectedOrganization.details.phone_1 || ''}</p>
                       </div>
                       <div>
                         <p className="text-xs text-slate-600">Website</p>
-                        <p className="font-semibold text-slate-900">{selectedOrganization.details.website || '—'}</p>
+                        <p className="font-semibold text-slate-900">{selectedOrganization.details.website || ''}</p>
                       </div>
                       <div>
                         <p className="text-xs text-slate-600">Status</p>
@@ -510,14 +510,14 @@ export default function OrganizationVerificationManagement() {
                 {/* Documents */}
                 {selectedOrganization.documents && selectedOrganization.documents.length > 0 && (
                   <div className="bg-slate-50 p-4 rounded-lg">
-                    <h4 className="font-bold text-slate-900 mb-3">📄 Registration Documents ({selectedOrganization.documents.length})</h4>
+                    <h4 className="font-bold text-slate-900 mb-3"> Registration Documents ({selectedOrganization.documents.length})</h4>
                     <div className="space-y-2">
                       {selectedOrganization.documents.map((doc) => (
                         <div key={doc.id} className="flex items-center justify-between bg-white p-3 rounded border border-slate-200">
                           <div>
                             <p className="font-semibold text-slate-900 capitalize">{doc.document_type}</p>
                             <p className="text-xs text-slate-600">
-                              {doc.status} • {new Date(doc.created_at).toLocaleDateString()}
+                              {doc.status} {new Date(doc.created_at).toLocaleDateString()}
                             </p>
                           </div>
                           <a
@@ -526,7 +526,7 @@ export default function OrganizationVerificationManagement() {
                             rel="noopener noreferrer"
                             className="px-3 py-1 text-xs bg-blue-500 text-white rounded hover:bg-blue-600"
                           >
-                            📥 View
+                             View
                           </a>
                         </div>
                       ))}
@@ -537,7 +537,7 @@ export default function OrganizationVerificationManagement() {
                 {/* Services */}
                 {selectedOrganization.services && selectedOrganization.services.length > 0 && (
                   <div className="bg-slate-50 p-4 rounded-lg">
-                    <h4 className="font-bold text-slate-900 mb-3">🎯 Services Offered ({selectedOrganization.services.length})</h4>
+                    <h4 className="font-bold text-slate-900 mb-3"> Services Offered ({selectedOrganization.services.length})</h4>
                     <div className="space-y-2">
                       {selectedOrganization.services.map((service) => (
                         <div key={service.id} className="bg-white p-3 rounded border border-slate-200">
@@ -554,21 +554,21 @@ export default function OrganizationVerificationManagement() {
                 {/* Admin Notes */}
                 {selectedOrganization.details?.approval_notes && (
                   <div className="bg-green-50 border border-green-200 p-4 rounded-lg">
-                    <h4 className="font-bold text-green-900 mb-2">✅ Approval Notes</h4>
+                    <h4 className="font-bold text-green-900 mb-2"> Approval Notes</h4>
                     <p className="text-sm text-green-800">{selectedOrganization.details.approval_notes}</p>
                   </div>
                 )}
 
                 {selectedOrganization.details?.rejection_reason && (
                   <div className="bg-red-50 border border-red-200 p-4 rounded-lg">
-                    <h4 className="font-bold text-red-900 mb-2">❌ Rejection Reason</h4>
+                    <h4 className="font-bold text-red-900 mb-2"> Rejection Reason</h4>
                     <p className="text-sm text-red-800">{selectedOrganization.details.rejection_reason}</p>
                   </div>
                 )}
 
                 {selectedOrganization.details?.suspension_reason && (
                   <div className="bg-orange-50 border border-orange-200 p-4 rounded-lg">
-                    <h4 className="font-bold text-orange-900 mb-2">⏸️ Suspension Reason</h4>
+                    <h4 className="font-bold text-orange-900 mb-2">⏸ Suspension Reason</h4>
                     <p className="text-sm text-orange-800">{selectedOrganization.details.suspension_reason}</p>
                   </div>
                 )}
@@ -584,7 +584,7 @@ export default function OrganizationVerificationManagement() {
                       }}
                       className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition text-sm"
                     >
-                      ✅ Approve
+                       Approve
                     </button>
                   )}
                   {selectedOrganization.details?.verification_status !== 'rejected' && (
@@ -596,7 +596,7 @@ export default function OrganizationVerificationManagement() {
                       }}
                       className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition text-sm"
                     >
-                      ❌ Reject
+                       Reject
                     </button>
                   )}
                   <button
@@ -612,7 +612,7 @@ export default function OrganizationVerificationManagement() {
                     }}
                     className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition text-sm"
                   >
-                    ✏️ Update Info
+                     Update Info
                   </button>
                   {selectedOrganization.details?.verification_status !== 'suspended' && (
                     <button
@@ -623,14 +623,14 @@ export default function OrganizationVerificationManagement() {
                       }}
                       className="px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition text-sm"
                     >
-                      ⏸️ Suspend
+                      ⏸ Suspend
                     </button>
                   )}
                   <button
                     onClick={() => handleRemoveOrganization(selectedOrganization.organization.id)}
                     className="px-4 py-2 bg-red-700 text-white rounded-lg hover:bg-red-800 transition text-sm"
                   >
-                    🗑️ Remove
+                     Remove
                   </button>
                 </div>
               </div>
@@ -642,11 +642,11 @@ export default function OrganizationVerificationManagement() {
       {/* ADD ORGANIZATION TAB */}
       {activeTab === 'add-organization' && (
         <div className="max-w-2xl mx-auto bg-white rounded-lg border border-slate-200 p-6 space-y-4">
-          <h2 className="text-2xl font-bold text-slate-900">➕ Add Organization</h2>
+          <h2 className="text-2xl font-bold text-slate-900"> Add Organization</h2>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">🏢 Organization Name</label>
+              <label className="block text-sm font-medium text-slate-700 mb-2"> Organization Name</label>
               <input
                 type="text"
                 placeholder="ABC Therapy Center"
@@ -657,7 +657,7 @@ export default function OrganizationVerificationManagement() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">📁 Organization Type</label>
+              <label className="block text-sm font-medium text-slate-700 mb-2"> Organization Type</label>
               <select
                 value={addForm.type}
                 onChange={(e) => setAddForm({ ...addForm, type: e.target.value })}
@@ -671,7 +671,7 @@ export default function OrganizationVerificationManagement() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">📧 Email</label>
+              <label className="block text-sm font-medium text-slate-700 mb-2"> Email</label>
               <input
                 type="email"
                 placeholder="contact@therapycenter.com"
@@ -682,7 +682,7 @@ export default function OrganizationVerificationManagement() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">📱 Phone (Optional)</label>
+              <label className="block text-sm font-medium text-slate-700 mb-2"> Phone (Optional)</label>
               <input
                 type="text"
                 placeholder="+91 XXXXX XXXXX"
@@ -693,7 +693,7 @@ export default function OrganizationVerificationManagement() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">📍 Location (Address)</label>
+              <label className="block text-sm font-medium text-slate-700 mb-2"> Location (Address)</label>
               <input
                 type="text"
                 placeholder="123 Main Street"
@@ -704,7 +704,7 @@ export default function OrganizationVerificationManagement() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">🏙️ City</label>
+              <label className="block text-sm font-medium text-slate-700 mb-2"> City</label>
               <input
                 type="text"
                 placeholder="Mumbai"
@@ -715,7 +715,7 @@ export default function OrganizationVerificationManagement() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">🗺️ State (Optional)</label>
+              <label className="block text-sm font-medium text-slate-700 mb-2"> State (Optional)</label>
               <input
                 type="text"
                 placeholder="Maharashtra"
@@ -726,7 +726,7 @@ export default function OrganizationVerificationManagement() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">🌐 Website (Optional)</label>
+              <label className="block text-sm font-medium text-slate-700 mb-2"> Website (Optional)</label>
               <input
                 type="text"
                 placeholder="https://therapycenter.com"
@@ -738,7 +738,7 @@ export default function OrganizationVerificationManagement() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-2">🎯 Specializations (Optional)</label>
+            <label className="block text-sm font-medium text-slate-700 mb-2"> Specializations (Optional)</label>
             <input
               type="text"
               placeholder="Speech Therapy, Occupational Therapy, Special Education"
@@ -752,7 +752,7 @@ export default function OrganizationVerificationManagement() {
             onClick={handleAddOrganization}
             className="w-full px-4 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition"
           >
-            ✅ Add Organization
+             Add Organization
           </button>
         </div>
       )}
@@ -760,10 +760,10 @@ export default function OrganizationVerificationManagement() {
       {/* APPROVE TAB */}
       {activeTab === 'approve' && (
         <div className="max-w-lg mx-auto bg-white rounded-lg border border-slate-200 p-6 space-y-4">
-          <h2 className="text-2xl font-bold text-slate-900">✅ Approve Organization</h2>
+          <h2 className="text-2xl font-bold text-slate-900"> Approve Organization</h2>
 
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-2">🔍 Find Organization</label>
+            <label className="block text-sm font-medium text-slate-700 mb-2"> Find Organization</label>
             <input
               type="text"
               placeholder="Type organization name or email..."
@@ -807,7 +807,7 @@ export default function OrganizationVerificationManagement() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-2">📝 Approval Notes (Optional)</label>
+                <label className="block text-sm font-medium text-slate-700 mb-2"> Approval Notes (Optional)</label>
                 <textarea
                   placeholder="Add any notes about this approval..."
                   value={approvalForm.approval_notes}
@@ -821,14 +821,14 @@ export default function OrganizationVerificationManagement() {
                 onClick={handleApproveOrganization}
                 className="w-full px-4 py-3 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition"
               >
-                ✅ Approve Organization
+                 Approve Organization
               </button>
 
               <button
                 onClick={() => setApprovalForm({ orgId: '', orgSearch: '', approval_notes: '' })}
                 className="w-full px-4 py-2 bg-slate-300 text-slate-700 rounded-lg hover:bg-slate-400 transition"
               >
-                ✕ Cancel
+                 Cancel
               </button>
             </>
           )}
@@ -838,10 +838,10 @@ export default function OrganizationVerificationManagement() {
       {/* REJECT TAB */}
       {activeTab === 'reject' && (
         <div className="max-w-lg mx-auto bg-white rounded-lg border border-slate-200 p-6 space-y-4">
-          <h2 className="text-2xl font-bold text-slate-900">❌ Reject Organization</h2>
+          <h2 className="text-2xl font-bold text-slate-900"> Reject Organization</h2>
 
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-2">🔍 Find Organization</label>
+            <label className="block text-sm font-medium text-slate-700 mb-2"> Find Organization</label>
             <input
               type="text"
               placeholder="Type organization name or email..."
@@ -885,7 +885,7 @@ export default function OrganizationVerificationManagement() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-2">⚠️ Rejection Reason</label>
+                <label className="block text-sm font-medium text-slate-700 mb-2"> Rejection Reason</label>
                 <textarea
                   placeholder="Explain why this organization is being rejected..."
                   value={rejectionForm.rejection_reason}
@@ -899,14 +899,14 @@ export default function OrganizationVerificationManagement() {
                 onClick={handleRejectOrganization}
                 className="w-full px-4 py-3 bg-red-600 text-white font-semibold rounded-lg hover:bg-red-700 transition"
               >
-                ❌ Reject Organization
+                 Reject Organization
               </button>
 
               <button
                 onClick={() => setRejectionForm({ orgId: '', orgSearch: '', rejection_reason: '' })}
                 className="w-full px-4 py-2 bg-slate-300 text-slate-700 rounded-lg hover:bg-slate-400 transition"
               >
-                ✕ Cancel
+                 Cancel
               </button>
             </>
           )}
@@ -916,10 +916,10 @@ export default function OrganizationVerificationManagement() {
       {/* UPDATE TAB */}
       {activeTab === 'update' && (
         <div className="max-w-2xl mx-auto bg-white rounded-lg border border-slate-200 p-6 space-y-4">
-          <h2 className="text-2xl font-bold text-slate-900">✏️ Update Organization Information</h2>
+          <h2 className="text-2xl font-bold text-slate-900"> Update Organization Information</h2>
 
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-2">🔍 Find Organization</label>
+            <label className="block text-sm font-medium text-slate-700 mb-2"> Find Organization</label>
             <input
               type="text"
               placeholder="Type organization name or email..."
@@ -1077,7 +1077,7 @@ export default function OrganizationVerificationManagement() {
                 onClick={handleUpdateOrganization}
                 className="w-full px-4 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition"
               >
-                ✅ Update Organization
+                 Update Organization
               </button>
 
               <button
@@ -1096,7 +1096,7 @@ export default function OrganizationVerificationManagement() {
                 })}
                 className="w-full px-4 py-2 bg-slate-300 text-slate-700 rounded-lg hover:bg-slate-400 transition"
               >
-                ✕ Cancel
+                 Cancel
               </button>
             </>
           )}
@@ -1106,14 +1106,14 @@ export default function OrganizationVerificationManagement() {
       {/* SUSPEND TAB */}
       {activeTab === 'suspend' && (
         <div className="max-w-lg mx-auto bg-white rounded-lg border border-slate-200 p-6 space-y-4">
-          <h2 className="text-2xl font-bold text-slate-900">⏸️ Suspend Organization</h2>
+          <h2 className="text-2xl font-bold text-slate-900">⏸ Suspend Organization</h2>
 
           <div className="bg-orange-50 border border-orange-200 p-4 rounded-lg">
-            <p className="text-sm text-orange-800">⚠️ This will suspend the organization. They cannot take appointments until unsuspended.</p>
+            <p className="text-sm text-orange-800"> This will suspend the organization. They cannot take appointments until unsuspended.</p>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-2">🔍 Find Organization</label>
+            <label className="block text-sm font-medium text-slate-700 mb-2"> Find Organization</label>
             <input
               type="text"
               placeholder="Type organization name or email..."
@@ -1157,7 +1157,7 @@ export default function OrganizationVerificationManagement() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-2">⚠️ Suspension Reason (Optional)</label>
+                <label className="block text-sm font-medium text-slate-700 mb-2"> Suspension Reason (Optional)</label>
                 <textarea
                   placeholder="Explain why the organization is being suspended..."
                   value={suspendForm.suspension_reason}
@@ -1171,14 +1171,14 @@ export default function OrganizationVerificationManagement() {
                 onClick={handleSuspendOrganization}
                 className="w-full px-4 py-3 bg-orange-600 text-white font-semibold rounded-lg hover:bg-orange-700 transition"
               >
-                ⏸️ Suspend Organization
+                ⏸ Suspend Organization
               </button>
 
               <button
                 onClick={() => setSuspendForm({ orgId: '', orgSearch: '', suspension_reason: '' })}
                 className="w-full px-4 py-2 bg-slate-300 text-slate-700 rounded-lg hover:bg-slate-400 transition"
               >
-                ✕ Cancel
+                 Cancel
               </button>
             </>
           )}

@@ -6,10 +6,10 @@ export default function BottomNav() {
   const { t } = useLang();
 
   const items = [
-    { to: '/home',      icon: Home,     label: t('nav_home') },
-    { to: '/learn',     icon: BookOpen, label: t('nav_learn') },
-    { to: '/community', icon: Users,    label: t('nav_community') },
-    { to: '/profile',   icon: User,     label: t('nav_profile') },
+    { to: '/home', icon: Home, label: t('nav_home') },
+    { to: '/learn', icon: BookOpen, label: t('nav_learn') },
+    { to: '/community', icon: Users, label: t('nav_community') },
+    { to: '/profile', icon: User, label: t('nav_profile') },
   ];
 
   return (

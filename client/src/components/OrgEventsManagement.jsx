@@ -72,7 +72,7 @@ export default function OrgEventsManagement() {
 
   async function handleCreateEvent() {
     if (!createForm.title || !createForm.event_date) {
-      alert('❌ Title and date required');
+      alert(' Title and date required');
       return;
     }
 
@@ -89,7 +89,7 @@ export default function OrgEventsManagement() {
       }
 
       await api.post(endpoint, payload);
-      alert('✅ Event created successfully');
+      alert(' Event created successfully');
       setCreateForm({
         type: 'event',
         title: '',
@@ -108,7 +108,7 @@ export default function OrgEventsManagement() {
       setActiveTab('view');
       fetchEvents();
     } catch (err) {
-      alert('❌ ' + (err.response?.data?.error || 'Failed to create event'));
+      alert(' ' + (err.response?.data?.error || 'Failed to create event'));
     }
   }
 
@@ -138,7 +138,7 @@ export default function OrgEventsManagement() {
         end_time: event.end_time
       });
     } catch (err) {
-      alert('❌ Failed to load event details');
+      alert(' Failed to load event details');
     }
   }
 
@@ -152,17 +152,17 @@ export default function OrgEventsManagement() {
         is_paid: editForm.is_paid,
         amount: editForm.amount
       });
-      alert('✅ Event updated');
+      alert(' Event updated');
       fetchEvents();
       setSelectedEvent(null);
     } catch (err) {
-      alert('❌ Failed to update event');
+      alert(' Failed to update event');
     }
   }
 
   async function handleReschedule() {
     if (!rescheduleForm.event_date) {
-      alert('❌ Date required');
+      alert(' Date required');
       return;
     }
 
@@ -172,24 +172,24 @@ export default function OrgEventsManagement() {
         start_time: rescheduleForm.start_time,
         end_time: rescheduleForm.end_time
       });
-      alert('✅ Event rescheduled');
+      alert(' Event rescheduled');
       fetchEvents();
       setSelectedEvent(null);
     } catch (err) {
-      alert('❌ Failed to reschedule');
+      alert(' Failed to reschedule');
     }
   }
 
   async function handleDeleteEvent(eventId) {
-    if (!window.confirm('⚠️ Delete this event? All registrations will be removed.')) return;
+    if (!window.confirm(' Delete this event? All registrations will be removed.')) return;
 
     try {
       await api.delete(`/org-events/${eventId}`);
-      alert('✅ Event cancelled');
+      alert(' Event cancelled');
       fetchEvents();
       setSelectedEvent(null);
     } catch (err) {
-      alert('❌ Failed to delete event');
+      alert(' Failed to delete event');
     }
   }
 
@@ -205,7 +205,7 @@ export default function OrgEventsManagement() {
               : 'border-transparent text-slate-600 hover:text-slate-900'
           }`}
         >
-          📅 View Events
+           View Events
         </button>
         <button
           onClick={() => setActiveTab('create')}
@@ -215,7 +215,7 @@ export default function OrgEventsManagement() {
               : 'border-transparent text-slate-600 hover:text-slate-900'
           }`}
         >
-          ➕ Create Event
+           Create Event
         </button>
       </div>
 
@@ -259,11 +259,11 @@ export default function OrgEventsManagement() {
                   <p className="text-sm text-slate-600 mb-3">{event.description?.substring(0, 80)}...</p>
 
                   <div className="space-y-2 text-sm">
-                    <p className="text-slate-600">📅 {new Date(event.event_date).toLocaleDateString()}</p>
+                    <p className="text-slate-600"> {new Date(event.event_date).toLocaleDateString()}</p>
                     {event.start_time && <p className="text-slate-600">⏰ {event.start_time}</p>}
-                    {event.location && <p className="text-slate-600">📍 {event.location}</p>}
-                    <p className="text-slate-600">👥 Capacity: {event.capacity} | Registered: {event.registration_count}</p>
-                    {event.is_paid && <p className="text-green-600 font-semibold">💰 ${event.amount}</p>}
+                    {event.location && <p className="text-slate-600"> {event.location}</p>}
+                    <p className="text-slate-600"> Capacity: {event.capacity} | Registered: {event.registration_count}</p>
+                    {event.is_paid && <p className="text-green-600 font-semibold"> ${event.amount}</p>}
                   </div>
 
                   <button
@@ -288,7 +288,7 @@ export default function OrgEventsManagement() {
                 disabled={currentPage === 0}
                 className="px-4 py-2 rounded-lg bg-slate-200 hover:bg-slate-300 disabled:opacity-50"
               >
-                ← Prev
+                 Prev
               </button>
               <span className="px-4 py-2 text-slate-600">Page {currentPage + 1}</span>
               <button
@@ -296,7 +296,7 @@ export default function OrgEventsManagement() {
                 disabled={events.length < limit}
                 className="px-4 py-2 rounded-lg bg-slate-200 hover:bg-slate-300 disabled:opacity-50"
               >
-                Next →
+                Next 
               </button>
             </div>
           )}
@@ -442,7 +442,7 @@ export default function OrgEventsManagement() {
             onClick={handleCreateEvent}
             className="w-full px-4 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition"
           >
-            ✅ Create Event
+             Create Event
           </button>
         </div>
       )}
@@ -457,7 +457,7 @@ export default function OrgEventsManagement() {
                 onClick={() => setSelectedEvent(null)}
                 className="text-2xl text-slate-400 hover:text-slate-600"
               >
-                ✕
+                
               </button>
             </div>
 
@@ -554,19 +554,19 @@ export default function OrgEventsManagement() {
                 onClick={handleEditEvent}
                 className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm"
               >
-                💾 Save Changes
+                 Save Changes
               </button>
               <button
                 onClick={handleReschedule}
                 className="flex-1 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 text-sm"
               >
-                📅 Reschedule
+                 Reschedule
               </button>
               <button
                 onClick={() => handleDeleteEvent(selectedEvent.id)}
                 className="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 text-sm"
               >
-                🗑️ Cancel Event
+                 Cancel Event
               </button>
             </div>
           </div>

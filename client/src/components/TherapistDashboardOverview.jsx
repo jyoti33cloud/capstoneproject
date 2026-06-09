@@ -35,7 +35,7 @@ export default function TherapistDashboardOverview() {
           <MetricCard
             label="Total Appointments"
             value={overview?.total_appointments || 0}
-            icon="📅"
+            icon=""
             color="blue"
             subtext="All time"
           />
@@ -49,14 +49,14 @@ export default function TherapistDashboardOverview() {
           <MetricCard
             label="Completed Sessions"
             value={overview?.completed_sessions || 0}
-            icon="✅"
+            icon=""
             color="purple"
             subtext="Finished appointments"
           />
           <MetricCard
             label="Pending Requests"
             value={overview?.pending_requests || 0}
-            icon="⏳"
+            icon=""
             color="orange"
             subtext="Awaiting your response"
             highlight={overview?.pending_requests > 0}
@@ -64,7 +64,7 @@ export default function TherapistDashboardOverview() {
           <MetricCard
             label="Families Served"
             value={overview?.families_served || 0}
-            icon="👨‍👩‍👧"
+            icon=""
             color="pink"
             subtext="Unique parents"
           />
@@ -72,9 +72,9 @@ export default function TherapistDashboardOverview() {
             label="Verification Status"
             value={overview?.verification_status?.charAt(0).toUpperCase() + overview?.verification_status?.slice(1)}
             icon={
-              overview?.verification_status === 'approved' ? '✅' :
-              overview?.verification_status === 'pending' ? '⏳' :
-              overview?.verification_status === 'rejected' ? '❌' : '❓'
+              overview?.verification_status === 'approved' ? '' :
+              overview?.verification_status === 'pending' ? '' :
+              overview?.verification_status === 'rejected' ? '' : ''
             }
             color={
               overview?.verification_status === 'approved' ? 'green' :
@@ -92,21 +92,21 @@ export default function TherapistDashboardOverview() {
           <QuickCard
             title="Today's Appointments"
             count={dashboardCards?.todays_appointments || 0}
-            icon="📍"
+            icon=""
             color="blue"
             description="Appointments scheduled for today"
           />
           <QuickCard
             title="This Week"
             count={dashboardCards?.this_week_appointments || 0}
-            icon="📆"
+            icon=""
             color="green"
             description="Upcoming this week"
           />
           <QuickCard
             title="New Messages"
             count={dashboardCards?.new_messages || 0}
-            icon="💬"
+            icon=""
             color="purple"
             description="Unread messages"
             highlight={dashboardCards?.new_messages > 0}
@@ -114,7 +114,7 @@ export default function TherapistDashboardOverview() {
           <QuickCard
             title="Pending Verifications"
             count={dashboardCards?.pending_verifications || 0}
-            icon="📋"
+            icon=""
             color="orange"
             description="Documents awaiting review"
             highlight={dashboardCards?.pending_verifications > 0}
@@ -124,31 +124,31 @@ export default function TherapistDashboardOverview() {
 
       {/* Quick Stats Summary */}
       <div className="bg-gradient-to-br from-blue-50 to-purple-50 rounded-2xl p-6 border border-blue-200">
-        <h3 className="text-lg font-bold text-slate-900 mb-4">📊 Quick Statistics</h3>
+        <h3 className="text-lg font-bold text-slate-900 mb-4"> Quick Statistics</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <StatItem
             label="Success Rate"
             value={overview?.completed_sessions && overview?.total_appointments
               ? `${Math.round((overview.completed_sessions / overview.total_appointments) * 100)}%`
               : '0%'}
-            icon="🎯"
+            icon=""
           />
           <StatItem
             label="Response Rate"
             value={overview?.pending_requests && overview?.upcoming_appointments
               ? `${100 - Math.round((overview.pending_requests / (overview.pending_requests + overview.upcoming_appointments)) * 100)}%`
               : '100%'}
-            icon="✨"
+            icon=""
           />
           <StatItem
             label="Families Served"
             value={overview?.families_served || 0}
-            icon="👪"
+            icon=""
           />
           <StatItem
             label="Active Status"
             value={overview?.verification_status === 'approved' ? 'Active' : 'Not Active'}
-            icon={overview?.verification_status === 'approved' ? '🟢' : '🔴'}
+            icon={overview?.verification_status === 'approved' ? '' : ''}
           />
         </div>
       </div>
@@ -165,7 +165,7 @@ export default function TherapistDashboardOverview() {
               ? 'text-yellow-900'
               : 'text-red-900'
           }`}>
-            ⚠️ Verification Status
+             Verification Status
           </h3>
           <p className={`text-sm ${
             overview?.verification_status === 'pending'

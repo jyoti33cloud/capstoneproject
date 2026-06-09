@@ -24,12 +24,12 @@ export default function TherapistDashboard() {
   }
 
   const tabs = [
-    { id: 'overview', label: 'Overview', icon: '📊' },
-    { id: 'appointments', label: 'Appointments', icon: '📅' },
-    { id: 'profile', label: 'My Profile', icon: '👤' },
-    { id: 'qualifications', label: 'Qualifications', icon: '🎓' },
+    { id: 'overview', label: 'Overview', icon: '' },
+    { id: 'appointments', label: 'Appointments', icon: '' },
+    { id: 'profile', label: 'My Profile', icon: '' },
+    { id: 'qualifications', label: 'Qualifications', icon: '' },
     { id: 'availability', label: 'Availability', icon: '⏰' },
-    { id: 'progress', label: 'Progress Notes', icon: '📝' }
+    { id: 'progress', label: 'Progress Notes', icon: '' }
   ];
 
   return (
@@ -170,14 +170,14 @@ function AptCard({ apt, onUpdate }) {
       <div className="flex items-start justify-between">
         <div className="flex-1">
           <h3 className="font-bold text-slate-900">{apt.parent_name}</h3>
-          <p className="text-sm text-slate-600 mt-2">📅 {apt.appointment_date} at {apt.start_time}</p>
+          <p className="text-sm text-slate-600 mt-2"> {apt.appointment_date} at {apt.start_time}</p>
           <p className={`text-sm font-semibold mt-1 ${
             apt.status === 'confirmed' ? 'text-green-600' :
             apt.status === 'requested' ? 'text-orange-600' : 'text-slate-600'
           }`}>
             Status: {apt.status}
           </p>
-          {apt.notes && <p className="text-sm text-slate-600 mt-2">📝 {apt.notes}</p>}
+          {apt.notes && <p className="text-sm text-slate-600 mt-2"> {apt.notes}</p>}
         </div>
         <div className="flex gap-2">
           {apt.status === 'requested' && (
@@ -646,7 +646,7 @@ function ProgressNotesTab() {
 
       {appointments.length === 0 ? (
         <div className="bg-blue-50 rounded-2xl p-6 border border-blue-200">
-          <p className="text-blue-900">📝 Complete appointments to add progress notes</p>
+          <p className="text-blue-900"> Complete appointments to add progress notes</p>
         </div>
       ) : (
         <div className="text-slate-600 text-center">

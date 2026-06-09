@@ -44,7 +44,7 @@ export default function OrganizationDashboard() {
 
   async function handleAddStaff() {
     if (!addForm.name || !addForm.email) {
-      alert('❌ Name and email required');
+      alert(' Name and email required');
       return;
     }
 
@@ -63,12 +63,12 @@ export default function OrganizationDashboard() {
       }
 
       await api.post(endpoint, payload);
-      alert('✅ Staff member added successfully');
+      alert(' Staff member added successfully');
       setAddForm({ staffType: 'therapist', name: '', email: '', position: '', specialization: '' });
       setActiveTab('team');
       fetchData();
     } catch (err) {
-      alert('❌ ' + (err.response?.data?.error || 'Failed to add staff member'));
+      alert(' ' + (err.response?.data?.error || 'Failed to add staff member'));
     }
   }
 
@@ -78,13 +78,13 @@ export default function OrganizationDashboard() {
       setSelectedStaff(data.staff);
       setEditForm({ position: data.staff.position });
     } catch (err) {
-      alert('❌ Failed to load profile');
+      alert(' Failed to load profile');
     }
   }
 
   async function handleUpdatePosition() {
     if (!selectedStaff || !editForm.position) {
-      alert('❌ Position required');
+      alert(' Position required');
       return;
     }
 
@@ -92,37 +92,37 @@ export default function OrganizationDashboard() {
       await api.put(`/org-dashboard/staff/${selectedStaff.id}/update`, {
         position: editForm.position
       });
-      alert('✅ Position updated');
+      alert(' Position updated');
       setSelectedStaff(null);
       fetchData();
     } catch (err) {
-      alert('❌ Failed to update position');
+      alert(' Failed to update position');
     }
   }
 
   async function handleRemoveStaff(staffId) {
-    if (!window.confirm('⚠️ Remove this staff member?')) return;
+    if (!window.confirm(' Remove this staff member?')) return;
 
     try {
       await api.delete(`/org-dashboard/staff/${staffId}/remove`);
-      alert('✅ Staff member removed');
+      alert(' Staff member removed');
       setSelectedStaff(null);
       fetchData();
     } catch (err) {
-      alert('❌ Failed to remove staff member');
+      alert(' Failed to remove staff member');
     }
   }
 
   async function handleDisableAccount(staffId) {
-    if (!window.confirm('⚠️ Disable this account?')) return;
+    if (!window.confirm(' Disable this account?')) return;
 
     try {
       await api.put(`/org-dashboard/staff/${staffId}/disable`);
-      alert('✅ Account disabled');
+      alert(' Account disabled');
       setSelectedStaff(null);
       fetchData();
     } catch (err) {
-      alert('❌ Failed to disable account');
+      alert(' Failed to disable account');
     }
   }
 
@@ -138,7 +138,7 @@ export default function OrganizationDashboard() {
               : 'border-transparent text-slate-600 hover:text-slate-900'
           }`}
         >
-          📊 Overview
+           Overview
         </button>
         <button
           onClick={() => setActiveTab('team')}
@@ -148,7 +148,7 @@ export default function OrganizationDashboard() {
               : 'border-transparent text-slate-600 hover:text-slate-900'
           }`}
         >
-          👥 Team Management
+           Team Management
         </button>
         <button
           onClick={() => setActiveTab('add-staff')}
@@ -158,7 +158,7 @@ export default function OrganizationDashboard() {
               : 'border-transparent text-slate-600 hover:text-slate-900'
           }`}
         >
-          ➕ Add Staff
+           Add Staff
         </button>
       </div>
 
@@ -176,19 +176,19 @@ export default function OrganizationDashboard() {
                 <MetricCard
                   label="Total Staff Members"
                   value={overview?.overview?.total_staff || 0}
-                  icon="👥"
+                  icon=""
                   color="blue"
                 />
                 <MetricCard
                   label="Active Clients/Families"
                   value={overview?.overview?.active_clients || 0}
-                  icon="👨‍👩‍👧"
+                  icon=""
                   color="green"
                 />
                 <MetricCard
                   label="Monthly Sessions"
                   value={overview?.overview?.monthly_sessions || 0}
-                  icon="📅"
+                  icon=""
                   color="purple"
                 />
                 <MetricCard
@@ -200,13 +200,13 @@ export default function OrganizationDashboard() {
                 <MetricCard
                   label="Upcoming Workshops"
                   value={overview?.overview?.upcoming_workshops || 0}
-                  icon="🎓"
+                  icon=""
                   color="pink"
                 />
                 <MetricCard
                   label="Active Services"
                   value={overview?.overview?.active_services || 0}
-                  icon="🎯"
+                  icon=""
                   color="yellow"
                 />
               </div>
@@ -215,7 +215,7 @@ export default function OrganizationDashboard() {
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {/* Recent Appointments */}
                 <div className="bg-white rounded-lg border border-slate-200 p-6">
-                  <h3 className="text-lg font-bold text-slate-900 mb-4">📅 Recent Appointments</h3>
+                  <h3 className="text-lg font-bold text-slate-900 mb-4"> Recent Appointments</h3>
                   {overview?.dashboard_widgets?.recent_appointments?.length === 0 ? (
                     <p className="text-slate-600 text-center py-4">No recent appointments</p>
                   ) : (
@@ -244,34 +244,34 @@ export default function OrganizationDashboard() {
 
                 {/* Monthly Statistics */}
                 <div className="bg-white rounded-lg border border-slate-200 p-6">
-                  <h3 className="text-lg font-bold text-slate-900 mb-4">📈 Monthly Statistics</h3>
+                  <h3 className="text-lg font-bold text-slate-900 mb-4"> Monthly Statistics</h3>
                   <div className="space-y-4">
                     <StatRow
                       label="Total Staff"
                       value={overview?.monthly_statistics?.total_staff || 0}
-                      icon="👥"
+                      icon=""
                     />
                     <StatRow
                       label="Completed Sessions"
                       value={overview?.monthly_statistics?.completed_sessions || 0}
-                      icon="✅"
+                      icon=""
                     />
                     <StatRow
                       label="Total Clients"
                       value={overview?.monthly_statistics?.total_clients || 0}
-                      icon="👨‍👩‍👧"
+                      icon=""
                     />
                     <StatRow
                       label="Active Services"
                       value={overview?.monthly_statistics?.active_services || 0}
-                      icon="🎯"
+                      icon=""
                     />
                   </div>
                 </div>
 
                 {/* New Applications & Event Registrations */}
                 <div className="bg-white rounded-lg border border-slate-200 p-6">
-                  <h3 className="text-lg font-bold text-slate-900 mb-4">📋 New Applications</h3>
+                  <h3 className="text-lg font-bold text-slate-900 mb-4"> New Applications</h3>
                   <p className="text-4xl font-bold text-slate-900 mt-4">
                     {overview?.dashboard_widgets?.new_applications || 0}
                   </p>
@@ -279,7 +279,7 @@ export default function OrganizationDashboard() {
                 </div>
 
                 <div className="bg-white rounded-lg border border-slate-200 p-6">
-                  <h3 className="text-lg font-bold text-slate-900 mb-4">🎫 Event Registrations</h3>
+                  <h3 className="text-lg font-bold text-slate-900 mb-4"> Event Registrations</h3>
                   <p className="text-4xl font-bold text-slate-900 mt-4">
                     {overview?.dashboard_widgets?.event_registrations || 0}
                   </p>
@@ -299,7 +299,7 @@ export default function OrganizationDashboard() {
           {/* Search */}
           <input
             type="text"
-            placeholder="🔍 Search staff by name or email..."
+            placeholder=" Search staff by name or email..."
             value={searchTerm}
             onChange={(e) => {
               setSearchTerm(e.target.value);
@@ -330,7 +330,7 @@ export default function OrganizationDashboard() {
                     <tr key={member.id} className="hover:bg-slate-50">
                       <td className="px-6 py-3 text-sm text-slate-900 font-medium">{member.name}</td>
                       <td className="px-6 py-3 text-sm text-slate-600">{member.email}</td>
-                      <td className="px-6 py-3 text-sm text-slate-600">{member.position || '—'}</td>
+                      <td className="px-6 py-3 text-sm text-slate-600">{member.position || ''}</td>
                       <td className="px-6 py-3 text-sm text-slate-600">
                         {new Date(member.joined_at).toLocaleDateString()}
                       </td>
@@ -359,7 +359,7 @@ export default function OrganizationDashboard() {
                     onClick={() => setSelectedStaff(null)}
                     className="text-2xl text-slate-400 hover:text-slate-600"
                   >
-                    ✕
+                    
                   </button>
                 </div>
 
@@ -387,19 +387,19 @@ export default function OrganizationDashboard() {
                     onClick={handleUpdatePosition}
                     className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
                   >
-                    💾 Update
+                     Update
                   </button>
                   <button
                     onClick={() => handleDisableAccount(selectedStaff.id)}
                     className="flex-1 px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition"
                   >
-                    🚫 Disable
+                     Disable
                   </button>
                   <button
                     onClick={() => handleRemoveStaff(selectedStaff.id)}
                     className="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition"
                   >
-                    🗑️ Remove
+                     Remove
                   </button>
                 </div>
 
@@ -418,7 +418,7 @@ export default function OrganizationDashboard() {
       {/* ADD STAFF TAB */}
       {activeTab === 'add-staff' && (
         <div className="max-w-2xl mx-auto bg-white rounded-lg border border-slate-200 p-6 space-y-4">
-          <h2 className="text-2xl font-bold text-slate-900">➕ Add Staff Member</h2>
+          <h2 className="text-2xl font-bold text-slate-900"> Add Staff Member</h2>
 
           <div>
             <label className="block text-sm font-medium text-slate-700 mb-2">Staff Type</label>
@@ -487,7 +487,7 @@ export default function OrganizationDashboard() {
             onClick={handleAddStaff}
             className="w-full px-4 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition"
           >
-            ✅ Add Staff Member
+             Add Staff Member
           </button>
         </div>
       )}

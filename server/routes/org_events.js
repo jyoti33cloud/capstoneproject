@@ -168,12 +168,12 @@ router.get('/:id/registrations', authRequired, isOrgAdmin, async (req, res) => {
 
     // Get registrations
     const { rows } = await pool.query(
-      `SELECT er.id, er.registration_date, er.status,
+      `SELECT er.id, er.registered_at AS registration_date, er.status,
               u.name, u.email, u.phone, u.avatar_url
        FROM event_registrations er
        JOIN users u ON er.user_id = u.id
        WHERE er.event_id = $1
-       ORDER BY er.registration_date DESC`,
+       ORDER BY er.registered_at DESC`,
       [req.params.id]
     );
 

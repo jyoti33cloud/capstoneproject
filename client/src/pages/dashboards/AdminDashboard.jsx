@@ -46,7 +46,7 @@ export default function AdminDashboard() {
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
           <div>
             <h1 className="text-2xl font-bold text-purple-600">Admin Panel</h1>
-            <p className="text-sm text-slate-600 mt-1">Platform Management • {user?.name}</p>
+            <p className="text-sm text-slate-600 mt-1">Platform Management {user?.name}</p>
           </div>
           <button
             onClick={logout}
@@ -337,7 +337,7 @@ function OrgVerificationTab() {
     <div>
       <h2 className="text-xl font-bold text-slate-900 mb-6">Organization Verification</h2>
       <div className="bg-blue-50 rounded-2xl p-6 border border-blue-200">
-        <p className="text-blue-900">🏢 Organization verification management coming soon...</p>
+        <p className="text-blue-900"> Organization verification management coming soon...</p>
       </div>
     </div>
   );
@@ -348,7 +348,7 @@ function ModerationTab() {
     <div>
       <h2 className="text-xl font-bold text-slate-900 mb-6">Content Moderation</h2>
       <div className="bg-orange-50 rounded-2xl p-6 border border-orange-200">
-        <p className="text-orange-900">🛡️ Moderation dashboard coming soon...</p>
+        <p className="text-orange-900"> Moderation dashboard coming soon...</p>
       </div>
     </div>
   );
@@ -359,7 +359,7 @@ function ResourcesTab() {
     <div>
       <h2 className="text-xl font-bold text-slate-900 mb-6">Resource Management</h2>
       <div className="bg-green-50 rounded-2xl p-6 border border-green-200">
-        <p className="text-green-900">📚 Resource library coming soon...</p>
+        <p className="text-green-900"> Resource library coming soon...</p>
       </div>
     </div>
   );
@@ -370,7 +370,7 @@ function AnalyticsTab() {
     <div>
       <h2 className="text-xl font-bold text-slate-900 mb-6">Analytics & Reports</h2>
       <div className="bg-purple-50 rounded-2xl p-6 border border-purple-200">
-        <p className="text-purple-900">📈 Detailed analytics coming soon...</p>
+        <p className="text-purple-900"> Detailed analytics coming soon...</p>
       </div>
     </div>
   );
@@ -428,7 +428,7 @@ function SettingsTab() {
     <div>
       <h2 className="text-xl font-bold text-slate-900 mb-6">System Settings</h2>
       <div className="bg-indigo-50 rounded-2xl p-6 border border-indigo-200">
-        <p className="text-indigo-900">⚙️ System configuration coming soon...</p>
+        <p className="text-indigo-900"> System configuration coming soon...</p>
       </div>
     </div>
   );

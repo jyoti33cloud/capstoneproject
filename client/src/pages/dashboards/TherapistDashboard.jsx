@@ -165,14 +165,14 @@ function AptCard({ apt, onUpdate }) {
       <div className="flex items-start justify-between">
         <div className="flex-1">
           <h3 className="font-bold text-slate-900">{apt.parent_name}</h3>
-          <p className="text-sm text-slate-600 mt-2">📅 {apt.appointment_date} at {apt.start_time}</p>
+          <p className="text-sm text-slate-600 mt-2"> {apt.appointment_date} at {apt.start_time}</p>
           <p className={`text-sm font-semibold mt-1 ${
             apt.status === 'confirmed' ? 'text-green-600' :
             apt.status === 'requested' ? 'text-orange-600' : 'text-slate-600'
           }`}>
             Status: {apt.status}
           </p>
-          {apt.notes && <p className="text-sm text-slate-600 mt-2">📝 {apt.notes}</p>}
+          {apt.notes && <p className="text-sm text-slate-600 mt-2"> {apt.notes}</p>}
         </div>
         <div className="flex gap-2">
           {apt.status === 'requested' && (
@@ -641,7 +641,7 @@ function ProgressNotesTab() {
 
       {appointments.length === 0 ? (
         <div className="bg-blue-50 rounded-2xl p-6 border border-blue-200">
-          <p className="text-blue-900">📝 Complete appointments to add progress notes</p>
+          <p className="text-blue-900"> Complete appointments to add progress notes</p>
         </div>
       ) : (
         <div className="text-slate-600 text-center">
@@ -800,7 +800,7 @@ export function VerificationTab() {
           : 'bg-orange-50 border-orange-300'
       }`}>
         <h3 className="font-bold text-lg mb-3">
-          {status.profile_status?.is_verified ? '✅ Verified' : '⏳ Verification Pending'}
+          {status.profile_status?.is_verified ? ' Verified' : ' Verification Pending'}
         </h3>
         <div className="grid grid-cols-3 gap-4 text-sm">
           <div>

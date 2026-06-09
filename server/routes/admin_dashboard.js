@@ -63,8 +63,8 @@ router.get('/overview', authRequired, isAdmin, async (req, res) => {
            (SELECT COUNT(*) FROM users WHERE role = $2) as organizations_admin,
            (SELECT COUNT(*) FROM appointment_slots WHERE status = $3) as completed_appointments,
            (SELECT COUNT(*) FROM posts) as community_posts,
-           (SELECT COUNT(DISTINCT user_id) FROM appointment_slots) as unique_parents,
-           (SELECT COUNT(DISTINCT specialist_id) FROM appointment_slots) as active_therapists
+           (SELECT COUNT(DISTINCT parent_id) FROM appointment_slots) as unique_parents,
+           (SELECT COUNT(DISTINCT therapist_id) FROM appointment_slots) as active_therapists
          `,
         ['therapist', 'organization_admin', 'completed']
       )

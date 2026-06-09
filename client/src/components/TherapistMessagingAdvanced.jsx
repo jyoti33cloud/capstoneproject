@@ -56,13 +56,13 @@ export default function TherapistMessagingAdvanced() {
       setMessages(data.messages);
       setSelectedConversation(parentId);
     } catch (err) {
-      alert('❌ Failed to load conversation');
+      alert(' Failed to load conversation');
     }
   }
 
   async function handleSendMessage() {
     if (!sendForm.parent_id || !sendForm.content) {
-      alert('❌ Please select parent and enter message');
+      alert(' Please select parent and enter message');
       return;
     }
 
@@ -73,17 +73,17 @@ export default function TherapistMessagingAdvanced() {
         subject: sendForm.subject || 'Message from therapist',
         content: sendForm.content
       });
-      alert('✅ Message sent');
+      alert(' Message sent');
       setSendForm({ parent_id: '', parent_search: '', message_type: 'general', subject: '', content: '' });
       fetchConversations();
     } catch (err) {
-      alert('❌ Failed to send message');
+      alert(' Failed to send message');
     }
   }
 
   async function handleSendFollowUp() {
     if (!followUpForm.parent_id || !followUpForm.advice_subject || !followUpForm.advice_content) {
-      alert('❌ Please select parent and fill in subject & advice');
+      alert(' Please select parent and fill in subject & advice');
       return;
     }
 
@@ -93,56 +93,56 @@ export default function TherapistMessagingAdvanced() {
         advice_subject: followUpForm.advice_subject,
         advice_content: followUpForm.advice_content
       });
-      alert('✅ Follow-up advice sent');
+      alert(' Follow-up advice sent');
       setFollowUpForm({ parent_id: '', parent_search: '', advice_subject: '', advice_content: '' });
       fetchConversations();
     } catch (err) {
-      alert('❌ Failed to send follow-up');
+      alert(' Failed to send follow-up');
     }
   }
 
   async function handleEditMessage(messageId, subject, content) {
     if (!subject || !content) {
-      alert('❌ Subject and content required');
+      alert(' Subject and content required');
       return;
     }
 
     try {
       await api.put(`/therapists/messages/${messageId}/edit`, { subject, content });
-      alert('✅ Message updated');
+      alert(' Message updated');
       if (selectedConversation) {
         handleViewConversation(selectedConversation);
       }
       setEditForm({ messageId: '', subject: '', content: '' });
     } catch (err) {
-      alert('❌ Failed to edit message');
+      alert(' Failed to edit message');
     }
   }
 
   async function handleDeleteMessage(messageId) {
-    if (!window.confirm('⚠️ Delete this message?')) return;
+    if (!window.confirm(' Delete this message?')) return;
 
     try {
       await api.delete(`/therapists/messages/${messageId}`);
-      alert('✅ Message deleted');
+      alert(' Message deleted');
       if (selectedConversation) {
         handleViewConversation(selectedConversation);
       }
     } catch (err) {
-      alert('❌ Failed to delete message');
+      alert(' Failed to delete message');
     }
   }
 
   async function handleDeleteConversation(parentId) {
-    if (!window.confirm('⚠️ Delete entire conversation? This cannot be undone!')) return;
+    if (!window.confirm(' Delete entire conversation? This cannot be undone!')) return;
 
     try {
       await api.delete(`/therapists/messages/conversation/${parentId}`);
-      alert('✅ Conversation deleted');
+      alert(' Conversation deleted');
       fetchConversations();
       setSelectedConversation(null);
     } catch (err) {
-      alert('❌ Failed to delete conversation');
+      alert(' Failed to delete conversation');
     }
   }
 
@@ -158,7 +158,7 @@ export default function TherapistMessagingAdvanced() {
               : 'border-transparent text-slate-600 hover:text-slate-900'
           }`}
         >
-          💬 Conversations
+           Conversations
         </button>
         <button
           onClick={() => setActiveTab('send')}
@@ -168,7 +168,7 @@ export default function TherapistMessagingAdvanced() {
               : 'border-transparent text-slate-600 hover:text-slate-900'
           }`}
         >
-          ✉️ Send Message
+           Send Message
         </button>
         <button
           onClick={() => setActiveTab('follow-up')}
@@ -178,7 +178,7 @@ export default function TherapistMessagingAdvanced() {
               : 'border-transparent text-slate-600 hover:text-slate-900'
           }`}
         >
-          📋 Follow-up Advice
+           Follow-up Advice
         </button>
       </div>
 
@@ -214,7 +214,7 @@ export default function TherapistMessagingAdvanced() {
                           </p>
                           {conv.unread === false && (
                             <span className="inline-block mt-1 px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded">
-                              💬 Unread
+                               Unread
                             </span>
                           )}
                         </div>
@@ -233,13 +233,13 @@ export default function TherapistMessagingAdvanced() {
                     onClick={() => setSelectedConversation(null)}
                     className="px-4 py-2 bg-slate-300 text-slate-700 rounded-lg hover:bg-slate-400 transition"
                   >
-                    ← Back to Conversations
+                     Back to Conversations
                   </button>
                   <button
                     onClick={() => handleDeleteConversation(selectedConversation)}
                     className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition"
                   >
-                    🗑️ Delete Conversation
+                     Delete Conversation
                   </button>
                 </div>
 
@@ -261,7 +261,7 @@ export default function TherapistMessagingAdvanced() {
                           <div className="flex-1">
                             <p className="font-semibold text-slate-900">{msg.sender_name}</p>
                             {msg.subject && (
-                              <p className="text-sm font-medium text-slate-700 mt-1">📌 {msg.subject}</p>
+                              <p className="text-sm font-medium text-slate-700 mt-1"> {msg.subject}</p>
                             )}
                             <p className="text-sm text-slate-700 mt-2">{msg.content}</p>
                             <p className="text-xs text-slate-500 mt-2">
@@ -269,7 +269,7 @@ export default function TherapistMessagingAdvanced() {
                             </p>
                             {msg.message_type === 'follow_up_advice' && (
                               <span className="inline-block mt-2 px-2 py-1 bg-green-100 text-green-800 text-xs rounded">
-                                💡 Follow-up Advice
+                                 Follow-up Advice
                               </span>
                             )}
                           </div>
@@ -278,13 +278,13 @@ export default function TherapistMessagingAdvanced() {
                               onClick={() => setEditForm({ messageId: msg.id, subject: msg.subject, content: msg.content })}
                               className="px-2 py-1 text-xs bg-blue-500 text-white rounded hover:bg-blue-600"
                             >
-                              ✏️ Edit
+                               Edit
                             </button>
                             <button
                               onClick={() => handleDeleteMessage(msg.id)}
                               className="px-2 py-1 text-xs bg-red-500 text-white rounded hover:bg-red-600"
                             >
-                              🗑️ Delete
+                               Delete
                             </button>
                           </div>
                         </div>
@@ -301,10 +301,10 @@ export default function TherapistMessagingAdvanced() {
       {/* SEND MESSAGE TAB */}
       {activeTab === 'send' && (
         <div className="max-w-2xl mx-auto bg-white rounded-lg border border-slate-200 p-6 space-y-4">
-          <h2 className="text-2xl font-bold text-slate-900">✉️ Send Message to Parents</h2>
+          <h2 className="text-2xl font-bold text-slate-900"> Send Message to Parents</h2>
 
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-2">🔍 Find Parent</label>
+            <label className="block text-sm font-medium text-slate-700 mb-2"> Find Parent</label>
             <input
               type="text"
               placeholder="Type parent name or email..."
@@ -387,7 +387,7 @@ export default function TherapistMessagingAdvanced() {
                 onClick={handleSendMessage}
                 className="w-full px-4 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition"
               >
-                ✉️ Send Message
+                 Send Message
               </button>
             </>
           )}
@@ -397,16 +397,16 @@ export default function TherapistMessagingAdvanced() {
       {/* FOLLOW-UP ADVICE TAB */}
       {activeTab === 'follow-up' && (
         <div className="max-w-2xl mx-auto bg-white rounded-lg border border-slate-200 p-6 space-y-4">
-          <h2 className="text-2xl font-bold text-slate-900">📋 Send Follow-up Advice</h2>
+          <h2 className="text-2xl font-bold text-slate-900"> Send Follow-up Advice</h2>
 
           <div className="bg-green-50 border border-green-200 p-4 rounded-lg">
             <p className="text-sm text-green-800">
-              💡 Use this to send professional advice and recommendations to parents after sessions.
+               Use this to send professional advice and recommendations to parents after sessions.
             </p>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-2">🔍 Find Parent</label>
+            <label className="block text-sm font-medium text-slate-700 mb-2"> Find Parent</label>
             <input
               type="text"
               placeholder="Type parent name or email..."
@@ -475,7 +475,7 @@ export default function TherapistMessagingAdvanced() {
                 onClick={handleSendFollowUp}
                 className="w-full px-4 py-3 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition"
               >
-                📋 Send Follow-up Advice
+                 Send Follow-up Advice
               </button>
             </>
           )}
@@ -513,13 +513,13 @@ export default function TherapistMessagingAdvanced() {
                 onClick={() => handleEditMessage(editForm.messageId, editForm.subject, editForm.content)}
                 className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
               >
-                💾 Save Changes
+                 Save Changes
               </button>
               <button
                 onClick={() => setEditForm({ messageId: '', subject: '', content: '' })}
                 className="flex-1 px-4 py-2 bg-slate-300 text-slate-700 rounded-lg hover:bg-slate-400 transition"
               >
-                ✕ Cancel
+                 Cancel
               </button>
             </div>
           </div>

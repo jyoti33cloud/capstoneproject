@@ -99,7 +99,7 @@ router.get('/overview', authRequired, isOrgAdmin, async (req, res) => {
 
       // Service utilization
       pool.query(
-        `SELECT os.id, os.name,
+        `SELECT os.id, os.service_name AS name,
                 COUNT(DISTINCT aps.parent_id) as clients_using,
                 COUNT(aps.id) as total_sessions,
                 ROUND((COUNT(DISTINCT aps.parent_id)::float / COALESCE(
@@ -107,10 +107,10 @@ router.get('/overview', authRequired, isOrgAdmin, async (req, res) => {
                    JOIN users u2 ON aps2.therapist_id = u2.id
                    WHERE u2.organization_id = $1), 1)::float * 100)::numeric, 2) as usage_percentage
          FROM organization_services os
-         LEFT JOIN appointment_slots aps ON aps.notes ILIKE '%' || os.name || '%'
+         LEFT JOIN appointment_slots aps ON aps.notes ILIKE '%' || os.service_name || '%'
          LEFT JOIN users u ON aps.therapist_id = u.id
          WHERE os.organization_id = $1
-         GROUP BY os.id, os.name
+         GROUP BY os.id, os.service_name
          ORDER BY total_sessions DESC`,
         [orgId]
       )

@@ -390,7 +390,7 @@ function AppointmentsTab({ orgId }) {
     <div>
       <h2 className="text-xl font-bold text-slate-900 mb-6">All Appointments</h2>
       <div className="bg-blue-50 rounded-2xl p-6 border border-blue-200">
-        <p className="text-blue-900">📅 Appointment oversight coming soon...</p>
+        <p className="text-blue-900"> Appointment oversight coming soon...</p>
       </div>
     </div>
   );
@@ -401,7 +401,7 @@ function EventsTab({ orgId }) {
     <div>
       <h2 className="text-xl font-bold text-slate-900 mb-6">Events & Workshops</h2>
       <div className="bg-orange-50 rounded-2xl p-6 border border-orange-200">
-        <p className="text-orange-900">🎯 Event management coming soon...</p>
+        <p className="text-orange-900"> Event management coming soon...</p>
       </div>
     </div>
   );
@@ -412,7 +412,7 @@ function ReportsTab({ orgId }) {
     <div>
       <h2 className="text-xl font-bold text-slate-900 mb-6">Reports & Analytics</h2>
       <div className="bg-purple-50 rounded-2xl p-6 border border-purple-200">
-        <p className="text-purple-900">📈 Analytics dashboard coming soon...</p>
+        <p className="text-purple-900"> Analytics dashboard coming soon...</p>
       </div>
     </div>
   );

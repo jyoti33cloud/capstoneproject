@@ -63,18 +63,18 @@ export default function UserManagement() {
 
   async function handleCreateUser() {
     if (!createForm.name || !createForm.email || !createForm.password) {
-      alert('❌ Name, email, and password required');
+      alert(' Name, email, and password required');
       return;
     }
 
     try {
       const { data } = await api.post('/admin/users/create', createForm);
-      alert('✅ User created successfully: ' + data.user.email);
+      alert(' User created successfully: ' + data.user.email);
       setCreateForm({ name: '', email: '', password: '', role: 'parent', city: '' });
       setActiveTab('view');
       fetchUsers();
     } catch (err) {
-      alert('❌ ' + (err.response?.data?.error || 'Failed to create user'));
+      alert(' ' + (err.response?.data?.error || 'Failed to create user'));
     }
   }
 
@@ -88,7 +88,7 @@ export default function UserManagement() {
         city: data.user.city || ''
       });
     } catch (err) {
-      alert('❌ Failed to load user profile');
+      alert(' Failed to load user profile');
     }
   }
 
@@ -97,21 +97,21 @@ export default function UserManagement() {
 
     try {
       const { data } = await api.put(`/admin/users/${selectedUser.id}/update`, editForm);
-      alert('✅ User updated successfully');
+      alert(' User updated successfully');
       setSelectedUser(data.user);
       fetchUsers();
     } catch (err) {
-      alert('❌ ' + (err.response?.data?.error || 'Failed to update user'));
+      alert(' ' + (err.response?.data?.error || 'Failed to update user'));
     }
   }
 
   async function handleChangeRole(userId, newRole) {
     try {
       await api.put(`/admin/users/${userId}/role`, { role: newRole });
-      alert('✅ User role changed to: ' + newRole);
+      alert(' User role changed to: ' + newRole);
       fetchUsers();
     } catch (err) {
-      alert('❌ Failed to change role');
+      alert(' Failed to change role');
     }
   }
 
@@ -120,9 +120,9 @@ export default function UserManagement() {
       const { data } = await api.put(`/admin/users/${userId}/reset-password`);
       setResetPasswordUser(data.user);
       setTempPassword(data.temporary_password);
-      alert('✅ Password reset. Share temporary password: ' + data.temporary_password);
+      alert(' Password reset. Share temporary password: ' + data.temporary_password);
     } catch (err) {
-      alert('❌ Failed to reset password');
+      alert(' Failed to reset password');
     }
   }
 
@@ -130,31 +130,31 @@ export default function UserManagement() {
     if (!window.confirm('Are you sure you want to deactivate this user?')) return;
     try {
       await api.put(`/admin/users/${userId}/deactivate`);
-      alert('✅ User deactivated');
+      alert(' User deactivated');
       fetchUsers();
     } catch (err) {
-      alert('❌ Failed to deactivate user');
+      alert(' Failed to deactivate user');
     }
   }
 
   async function handleActivateUser(userId) {
     try {
       await api.put(`/admin/users/${userId}/activate`);
-      alert('✅ User activated');
+      alert(' User activated');
       fetchUsers();
     } catch (err) {
-      alert('❌ Failed to activate user');
+      alert(' Failed to activate user');
     }
   }
 
   async function handleDeleteUser(userId) {
-    if (!window.confirm('⚠️ Are you sure? This will PERMANENTLY DELETE the user!')) return;
+    if (!window.confirm(' Are you sure? This will PERMANENTLY DELETE the user!')) return;
     try {
       await api.delete(`/admin/users/${userId}/delete`);
-      alert('✅ User permanently deleted');
+      alert(' User permanently deleted');
       fetchUsers();
     } catch (err) {
-      alert('❌ Failed to delete user');
+      alert(' Failed to delete user');
     }
   }
 
@@ -162,10 +162,10 @@ export default function UserManagement() {
     if (!window.confirm('Are you sure you want to soft delete this user?')) return;
     try {
       await api.put(`/admin/users/${userId}/soft-delete`);
-      alert('✅ User soft deleted');
+      alert(' User soft deleted');
       fetchUsers();
     } catch (err) {
-      alert('❌ Failed to soft delete user');
+      alert(' Failed to soft delete user');
     }
   }
 
@@ -181,7 +181,7 @@ export default function UserManagement() {
               : 'border-transparent text-slate-600 hover:text-slate-900'
           }`}
         >
-          📋 View All Users
+           View All Users
         </button>
         <button
           onClick={() => setActiveTab('create')}
@@ -191,7 +191,7 @@ export default function UserManagement() {
               : 'border-transparent text-slate-600 hover:text-slate-900'
           }`}
         >
-          ➕ Create User
+           Create User
         </button>
         <button
           onClick={() => setActiveTab('role-change')}
@@ -201,7 +201,7 @@ export default function UserManagement() {
               : 'border-transparent text-slate-600 hover:text-slate-900'
           }`}
         >
-          🔄 Change Role
+           Change Role
         </button>
       </div>
 
@@ -214,7 +214,7 @@ export default function UserManagement() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-white p-4 rounded-lg border border-slate-200">
             <div>
               <label className="block text-sm font-medium text-slate-700 mb-2">
-                🔍 Search by Name or Email
+                 Search by Name or Email
               </label>
               <input
                 type="text"
@@ -275,31 +275,31 @@ export default function UserManagement() {
                           {user.role}
                         </span>
                       </td>
-                      <td className="px-6 py-3 text-sm text-slate-600">{user.city || '—'}</td>
+                      <td className="px-6 py-3 text-sm text-slate-600">{user.city || ''}</td>
                       <td className="px-6 py-3 text-sm space-y-2">
                         <button
                           onClick={() => handleViewProfile(user.id)}
                           className="block w-full px-3 py-1 text-xs bg-blue-500 text-white rounded hover:bg-blue-600 transition"
                         >
-                          👁️ View Profile
+                           View Profile
                         </button>
                         <button
                           onClick={() => handleResetPassword(user.id)}
                           className="block w-full px-3 py-1 text-xs bg-orange-500 text-white rounded hover:bg-orange-600 transition"
                         >
-                          🔑 Reset Password
+                           Reset Password
                         </button>
                         <button
                           onClick={() => handleDeactivateUser(user.id)}
                           className="block w-full px-3 py-1 text-xs bg-yellow-500 text-white rounded hover:bg-yellow-600 transition"
                         >
-                          ⏸️ Deactivate
+                          ⏸ Deactivate
                         </button>
                         <button
                           onClick={() => handleDeleteUser(user.id)}
                           className="block w-full px-3 py-1 text-xs bg-red-500 text-white rounded hover:bg-red-600 transition"
                         >
-                          🗑️ Delete
+                           Delete
                         </button>
                       </td>
                     </tr>
@@ -317,7 +317,7 @@ export default function UserManagement() {
                 disabled={currentPage === 0}
                 className="px-4 py-2 rounded-lg bg-slate-200 hover:bg-slate-300 disabled:opacity-50"
               >
-                ← Previous
+                 Previous
               </button>
               <span className="px-4 py-2 text-slate-600">
                 Page {currentPage + 1}
@@ -327,7 +327,7 @@ export default function UserManagement() {
                 disabled={users.length < limit}
                 className="px-4 py-2 rounded-lg bg-slate-200 hover:bg-slate-300 disabled:opacity-50"
               >
-                Next →
+                Next 
               </button>
             </div>
           )}
@@ -373,13 +373,13 @@ export default function UserManagement() {
                     onClick={handleUpdateUser}
                     className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
                   >
-                    💾 Save Changes
+                     Save Changes
                   </button>
                   <button
                     onClick={() => setSelectedUser(null)}
                     className="flex-1 px-4 py-2 bg-slate-300 text-slate-700 rounded-lg hover:bg-slate-400 transition"
                   >
-                    ✕ Close
+                     Close
                   </button>
                 </div>
               </div>
@@ -391,10 +391,10 @@ export default function UserManagement() {
       {/* CREATE USER TAB */}
       {activeTab === 'create' && (
         <div className="max-w-lg mx-auto bg-white rounded-lg border border-slate-200 p-6 space-y-4">
-          <h2 className="text-2xl font-bold text-slate-900">➕ Create New User</h2>
+          <h2 className="text-2xl font-bold text-slate-900"> Create New User</h2>
 
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-2">👤 Full Name</label>
+            <label className="block text-sm font-medium text-slate-700 mb-2"> Full Name</label>
             <input
               type="text"
               placeholder="John Doe"
@@ -405,7 +405,7 @@ export default function UserManagement() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-2">📧 Email</label>
+            <label className="block text-sm font-medium text-slate-700 mb-2"> Email</label>
             <input
               type="email"
               placeholder="john@example.com"
@@ -416,7 +416,7 @@ export default function UserManagement() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-2">🔐 Password (min 6 chars)</label>
+            <label className="block text-sm font-medium text-slate-700 mb-2"> Password (min 6 chars)</label>
             <input
               type="password"
               placeholder="Enter secure password"
@@ -427,7 +427,7 @@ export default function UserManagement() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-2">👥 User Role</label>
+            <label className="block text-sm font-medium text-slate-700 mb-2"> User Role</label>
             <div className="space-y-2">
               <div>
                 <label className="flex items-center gap-2">
@@ -481,7 +481,7 @@ export default function UserManagement() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-2">🏙️ City (Optional)</label>
+            <label className="block text-sm font-medium text-slate-700 mb-2"> City (Optional)</label>
             <input
               type="text"
               placeholder="Mumbai, Delhi, etc."
@@ -495,7 +495,7 @@ export default function UserManagement() {
             onClick={handleCreateUser}
             className="w-full px-4 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition"
           >
-            ✅ Create User Account
+             Create User Account
           </button>
         </div>
       )}
@@ -503,10 +503,10 @@ export default function UserManagement() {
       {/* CHANGE ROLE TAB */}
       {activeTab === 'role-change' && (
         <div className="max-w-lg mx-auto bg-white rounded-lg border border-slate-200 p-6 space-y-4">
-          <h2 className="text-2xl font-bold text-slate-900">🔄 Change User Role</h2>
+          <h2 className="text-2xl font-bold text-slate-900"> Change User Role</h2>
 
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-2">🔍 Find User</label>
+            <label className="block text-sm font-medium text-slate-700 mb-2"> Find User</label>
             <input
               type="text"
               placeholder="Type user name or email..."
@@ -579,14 +579,14 @@ export default function UserManagement() {
                 disabled={!roleChangeForm.role}
                 className="w-full px-4 py-3 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition disabled:opacity-50"
               >
-                ✅ Update Role
+                 Update Role
               </button>
 
               <button
                 onClick={() => setRoleChangeForm({ searchUser: '', userId: null, role: '' })}
                 className="w-full px-4 py-2 bg-slate-300 text-slate-700 rounded-lg hover:bg-slate-400 transition"
               >
-                ✕ Cancel
+                 Cancel
               </button>
             </>
           )}
