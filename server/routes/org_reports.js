@@ -54,8 +54,8 @@ router.get('/overview', authRequired, isOrgAdmin, async (req, res) => {
       // Appointment statistics
       pool.query(
         `SELECT
-         ROUND((COUNT(CASE WHEN status = 'completed' THEN 1 END)::float / COUNT(*)::float * 100)::numeric, 2) as completion_rate,
-         ROUND((COUNT(CASE WHEN status = 'cancelled' THEN 1 END)::float / COUNT(*)::float * 100)::numeric, 2) as cancellation_rate,
+         ROUND((COUNT(CASE WHEN status = 'completed' THEN 1 END)::float / NULLIF(COUNT(*),0)::float * 100)::numeric, 2) as completion_rate,
+         ROUND((COUNT(CASE WHEN status = 'cancelled' THEN 1 END)::float / NULLIF(COUNT(*),0)::float * 100)::numeric, 2) as cancellation_rate,
          AVG(DATE_PART('day', aps.appointment_date - aps.created_at)) as avg_booking_advance_days,
          COUNT(CASE WHEN appointment_date = CURRENT_DATE THEN 1 END) as appointments_today,
          COUNT(CASE WHEN appointment_date >= CURRENT_DATE AND appointment_date < CURRENT_DATE + INTERVAL '7 days' THEN 1 END) as appointments_this_week,
@@ -74,7 +74,7 @@ router.get('/overview', authRequired, isOrgAdmin, async (req, res) => {
                 COUNT(DISTINCT CASE WHEN e.event_type = 'awareness_campaign' THEN e.id END) as campaigns,
                 SUM(e.capacity) as total_capacity,
                 COUNT(er.id) as total_registrations,
-                ROUND((COUNT(er.id)::float / SUM(e.capacity)::float * 100)::numeric, 2) as attendance_rate
+                ROUND((COUNT(er.id)::float / NULLIF(SUM(e.capacity),0)::float * 100)::numeric, 2) as attendance_rate
          FROM events e
          LEFT JOIN event_registrations er ON e.id = er.event_id
          WHERE e.organization_id = $1`,
@@ -176,9 +176,9 @@ router.get('/therapist-performance', authRequired, isOrgAdmin, async (req, res) 
               COUNT(CASE WHEN status = 'pending' THEN 1 END) as pending,
               COUNT(CASE WHEN status = 'cancelled' THEN 1 END) as cancelled,
               COUNT(DISTINCT parent_id) as unique_clients,
-              ROUND((COUNT(CASE WHEN status = 'completed' THEN 1 END)::float / COUNT(*)::float * 100)::numeric, 2) as completion_rate,
+              ROUND((COUNT(CASE WHEN status = 'completed' THEN 1 END)::float / NULLIF(COUNT(*),0)::float * 100)::numeric, 2) as completion_rate,
               AVG(EXTRACT(EPOCH FROM (end_time::time - start_time::time))/3600) as avg_session_hours,
-              ROUND((COUNT(DISTINCT parent_id)::float / COUNT(*)::float * 100)::numeric, 2) as repeat_client_rate
+              ROUND((COUNT(DISTINCT parent_id)::float / NULLIF(COUNT(*),0)::float * 100)::numeric, 2) as repeat_client_rate
        FROM users u
        LEFT JOIN appointment_slots aps ON u.id = aps.therapist_id
        WHERE u.organization_id = $1 AND u.role = 'therapist'
@@ -234,7 +234,7 @@ router.get('/revenue', authRequired, isOrgAdmin, async (req, res) => {
        SUM(CASE WHEN e.is_paid THEN e.capacity ELSE 0 END) as potential_paid_capacity,
        COUNT(DISTINCT er.user_id) as total_event_participants,
        SUM(e.capacity) as total_event_capacity,
-       ROUND((COUNT(DISTINCT er.user_id)::float / SUM(e.capacity)::float * 100)::numeric, 2) as capacity_utilization
+       ROUND((COUNT(DISTINCT er.user_id)::float / NULLIF(SUM(e.capacity),0)::float * 100)::numeric, 2) as capacity_utilization
        FROM events e
        LEFT JOIN event_registrations er ON e.id = er.event_id
        WHERE e.organization_id = $1`,
