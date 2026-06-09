@@ -301,6 +301,18 @@ router.put('/:id/notes', authRequired, isTherapist, async (req, res) => {
   }
 
   try {
+    // Get the appointment to resolve parent_id and date (both required on progress_notes)
+    const appt = await pool.query(
+      `SELECT parent_id, appointment_date FROM appointment_slots WHERE id = $1 AND therapist_id = $2`,
+      [req.params.id, therapistId]
+    );
+
+    if (!appt.rowCount) {
+      return res.status(404).json({ error: 'Appointment not found' });
+    }
+
+    const { parent_id, appointment_date } = appt.rows[0];
+
     // Check if progress note exists
     const existing = await pool.query(
       `SELECT id FROM progress_notes WHERE appointment_id = $1`,
@@ -311,17 +323,17 @@ router.put('/:id/notes', authRequired, isTherapist, async (req, res) => {
     if (existing.rowCount) {
       result = await pool.query(
         `UPDATE progress_notes
-         SET notes = $1, updated_at = NOW()
+         SET observations = $1, updated_at = NOW()
          WHERE appointment_id = $2
          RETURNING *`,
         [notes, req.params.id]
       );
     } else {
       result = await pool.query(
-        `INSERT INTO progress_notes (appointment_id, therapist_id, notes, created_at)
-         VALUES ($1, $2, $3, NOW())
+        `INSERT INTO progress_notes (appointment_id, therapist_id, parent_id, session_date, observations, created_at)
+         VALUES ($1, $2, $3, $4, $5, NOW())
          RETURNING *`,
-        [req.params.id, therapistId, notes]
+        [req.params.id, therapistId, parent_id, appointment_date, notes]
       );
     }
 

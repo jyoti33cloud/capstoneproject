@@ -7,7 +7,13 @@ const { sendWelcomeEmail } = require('../services/emailService');
 
 function signToken(user) {
   return jwt.sign(
-    { id: user.id, email: user.email, name: user.name, role: user.role },
+    {
+      id: user.id,
+      email: user.email,
+      name: user.name,
+      role: user.role,
+      organization_id: user.organization_id ?? null
+    },
     process.env.JWT_SECRET,
     { expiresIn: '7d' }
   );
@@ -67,7 +73,8 @@ router.post('/login', async (req, res) => {
       name: user.name,
       email: user.email,
       avatar_url: user.avatar_url,
-      role: user.role
+      role: user.role,
+      organization_id: user.organization_id ?? null
     };
     res.json({ user: safeUser, token: signToken(safeUser) });
   } catch (err) {
@@ -136,7 +143,8 @@ router.post('/google', async (req, res) => {
       name: user.name,
       email: user.email,
       avatar_url: user.avatar_url,
-      role: user.role
+      role: user.role,
+      organization_id: user.organization_id ?? null
     };
 
     console.log(`User authenticated via Google: ${email}`);
@@ -151,7 +159,7 @@ router.post('/google', async (req, res) => {
 router.get('/me', authRequired, async (req, res) => {
   try {
     const { rows } = await pool.query(
-      'SELECT id, name, email, avatar_url, role FROM users WHERE id = $1',
+      'SELECT id, name, email, avatar_url, role, organization_id FROM users WHERE id = $1',
       [req.user.id]
     );
     if (!rows.length) return res.status(404).json({ error: 'User not found' });
@@ -176,8 +184,8 @@ router.post('/select-role', authRequired, async (req, res) => {
     const uid = req.user.id;
 
     const updateQuery = role === 'therapist' && organizationId
-      ? `UPDATE users SET role = $1, organization_id = $2 WHERE id = $3 RETURNING id, name, email, avatar_url, role`
-      : `UPDATE users SET role = $1 WHERE id = $2 RETURNING id, name, email, avatar_url, role`;
+      ? `UPDATE users SET role = $1, organization_id = $2 WHERE id = $3 RETURNING id, name, email, avatar_url, role, organization_id`
+      : `UPDATE users SET role = $1 WHERE id = $2 RETURNING id, name, email, avatar_url, role, organization_id`;
 
     const params = role === 'therapist' && organizationId
       ? [role, organizationId, uid]

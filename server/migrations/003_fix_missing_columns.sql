@@ -13,3 +13,9 @@ ALTER TABLE events ADD COLUMN IF NOT EXISTS updated_at TIMESTAMPTZ DEFAULT NOW()
 
 -- event_registrations: status tracking
 ALTER TABLE event_registrations ADD COLUMN IF NOT EXISTS status VARCHAR(30) DEFAULT 'registered';
+
+-- therapist_availability: update tracking (code sets updated_at on upsert)
+ALTER TABLE therapist_availability ADD COLUMN IF NOT EXISTS updated_at TIMESTAMPTZ DEFAULT NOW();
+
+-- appointment_slots: cancellation reason (reject/cancel features)
+ALTER TABLE appointment_slots ADD COLUMN IF NOT EXISTS cancellation_reason TEXT;

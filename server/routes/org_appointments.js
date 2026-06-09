@@ -92,7 +92,7 @@ router.get('/history', authRequired, isOrgAdmin, async (req, res) => {
     const { rows } = await pool.query(
       `SELECT aps.id, aps.appointment_date, aps.start_time, aps.status,
               tp.name as therapist_name, pp.name as parent_name,
-              pn.notes as session_notes, pn.created_at as notes_date
+              pn.observations as session_notes, pn.created_at as notes_date
        FROM appointment_slots aps
        JOIN users tp ON aps.therapist_id = tp.id
        JOIN users pp ON aps.parent_id = pp.id

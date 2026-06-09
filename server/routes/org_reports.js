@@ -56,7 +56,7 @@ router.get('/overview', authRequired, isOrgAdmin, async (req, res) => {
         `SELECT
          ROUND((COUNT(CASE WHEN status = 'completed' THEN 1 END)::float / COUNT(*)::float * 100)::numeric, 2) as completion_rate,
          ROUND((COUNT(CASE WHEN status = 'cancelled' THEN 1 END)::float / COUNT(*)::float * 100)::numeric, 2) as cancellation_rate,
-         AVG(DATE_PART('day', appointment_date - created_at)) as avg_booking_advance_days,
+         AVG(DATE_PART('day', aps.appointment_date - aps.created_at)) as avg_booking_advance_days,
          COUNT(CASE WHEN appointment_date = CURRENT_DATE THEN 1 END) as appointments_today,
          COUNT(CASE WHEN appointment_date >= CURRENT_DATE AND appointment_date < CURRENT_DATE + INTERVAL '7 days' THEN 1 END) as appointments_this_week,
          COUNT(CASE WHEN appointment_date >= CURRENT_DATE AND appointment_date < CURRENT_DATE + INTERVAL '30 days' THEN 1 END) as appointments_this_month
@@ -137,7 +137,7 @@ router.get('/clients', authRequired, isOrgAdmin, async (req, res) => {
 
   try {
     const { rows } = await pool.query(
-      `SELECT u.id, u.name, u.email, u.phone,
+      `SELECT u.id, u.name, u.email,
               COUNT(DISTINCT aps.id) as total_sessions,
               COUNT(CASE WHEN aps.status = 'completed' THEN 1 END) as completed_sessions,
               MAX(aps.appointment_date) as last_session,
@@ -151,7 +151,7 @@ router.get('/clients', authRequired, isOrgAdmin, async (req, res) => {
          JOIN users t2 ON aps2.therapist_id = t2.id
          WHERE t2.organization_id = $1 AND aps2.parent_id = u.id
        )
-       GROUP BY u.id, u.name, u.email, u.phone
+       GROUP BY u.id, u.name, u.email
        ORDER BY total_sessions DESC`,
       [orgId]
     );

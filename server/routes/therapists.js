@@ -91,7 +91,7 @@ router.delete('/qualifications/:id', authRequired, async (req, res) => {
 router.post('/availability', authRequired, async (req, res) => {
   const { day_of_week, start_time, end_time } = req.body;
 
-  if (!day_of_week || !start_time) {
+  if (day_of_week === undefined || day_of_week === null || !start_time) {
     return res.status(400).json({ error: 'Day of week and start time required' });
   }
 

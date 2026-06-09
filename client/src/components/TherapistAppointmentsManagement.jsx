@@ -57,7 +57,7 @@ export default function TherapistAppointmentsManagement() {
     try {
       const { data } = await api.get(`/therapist/appointments/${appointmentId}/details`);
       setSelectedAppointment(data);
-      setNotesForm({ appointmentId, notes: data.notes?.notes || '' });
+      setNotesForm({ appointmentId, notes: data.notes?.observations || '' });
     } catch (err) {
       alert(' Failed to load appointment details');
     }
